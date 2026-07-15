@@ -8,17 +8,10 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
@@ -26,7 +19,22 @@
   <body>
     <nav class="navbar navbar-expand navbar-lewagon">
       <div class="container-fluid">
-        <%= link_to "App Nursy", root_path, class: "navbar-brand" %>
+        <%= link_to "Nursy", root_path, class: "navbar-brand" %>
+
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <%= link_to "Accueil", root_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Recherche", nurses_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Profil", nurses_path, class: "nav-link" %>
+          </li>
+          <li class="nav-item">
+            <%= link_to "Mon espace", my_space_path, class: "nav-link" %>
+          </li>
+        </ul>
 
         <ul class="navbar-nav ms-auto">
           <% if user_signed_in? %>
