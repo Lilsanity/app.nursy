@@ -1,9 +1,59 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+puts "Nettoyage de la base de données..."
+Review.destroy_all
+Appointment.destroy_all
+Availability.destroy_all
+NurseSpecialty.destroy_all
+Nurse.destroy_all
+Specialty.destroy_all
+Commune.destroy_all
+User.destroy_all
+
+puts "Création des communes..."
+commune_paris = Commune.create!(name: "Paris", postal_code: "75001")
+commune_lyon = Commune.create!(name: "Lyon", postal_code: "69001")
+commune_marseille = Commune.create!(name: "Marseille", postal_code: "13001")
+
+puts "Création des spécialités..."
+specialties = ["Pédiatrie", "Gériatrie", "Soins Palliatifs", "Pansements complexes", "Vaccination"]
+specialty_objects = specialties.map do |spec_name|
+  Specialty.create!(name: spec_name)
+end
+
+puts "Création des utilisateurs..."
+test_user = User.create!(
+  first_name: "Jean",
+  last_name: "Dupont",
+  email: "jean@gmail.com",
+  password: "password",
+  phone: "0612345678",
+  commune: "Paris"
+)
+
+puts "Création des infirmiers..."
+5.times do |i|
+  nurse = Nurse.create!(
+    first_name: "Nurse_FN_#{i}",
+    last_name: "Nurse_LN_#{i}",
+    email: "nurse#{i}@nursy.fr",
+    rpps_number: "1000#{i}98765",
+    commune: [commune_paris, commune_lyon, commune_marseille].sample,
+    average_rating: rand(3.5..5.0).round(1),
+    is_verified: true
+  )
+
+  nurse_specs = specialty_objects.sample(rand(1..2))
+  nurse_specs.each do |spec|
+    NurseSpecialty.create!(nurse: nurse, specialty: spec)
+  end
+
+  3.times do |j|
+    Availability.create!(
+      nurse: nurse,
+      start_time: DateTime.now + j.days + 2.hours,
+      end_time: DateTime.now + j.days + 3.hours,
+      is_booked: false
+    )
+  end
+end
+
+puts "Base de données générée avec succès ! 🎉"
