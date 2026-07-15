@@ -1,12 +1,39 @@
 .navbar-lewagon {
-  justify-content: space-between;
   background: white;
-}
+  border-bottom: 1px solid #E5E7EB;
 
-.navbar-lewagon .navbar-collapse {
-  flex-grow: 0;
-}
+  .navbar-brand {
+    color: $teal;
+    font-family: "Inter", sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+  }
 
-.navbar-lewagon .navbar-brand img {
-  width: 40px;
+  .navbar-nav.mx-auto {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.nav-link {
+    color: #9CA3AF;
+    font-family: "Inter", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0 20px;
+  }
+
+  .btn-primary {
+    background-color: $teal;
+    border-color: $teal;
+    border-radius: 20px;
+    padding: 8px 20px;
+  }
+
+  .btn-outline-primary {
+    color: $teal;
+    border-color: $teal;
+    border-radius: 20px;
+    padding: 8px 20px;
+  }
 }
