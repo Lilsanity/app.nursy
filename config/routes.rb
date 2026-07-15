@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Authentification
+  devise_for :users
+
   # Page d'accueil
   root to: "pages#home"
 
