@@ -1,0 +1,25 @@
+<div class="container mt-4">
+  <h1 class="mb-4">Infirmières disponibles</h1>
+
+  <% @nurses.each do |nurse| %>
+    <div class="nurse-card d-flex align-items-center p-3 mb-3">
+      <div class="nurse-avatar me-3">
+        <%= nurse.first_name[0] %><%= nurse.last_name[0] %>
+      </div>
+
+      <div class="flex-grow-1">
+        <h5 class="mb-1"><%= nurse.first_name %> <%= nurse.last_name %></h5>
+        <p class="mb-1 text-muted">📍 <%= nurse.commune.name %></p>
+        <p class="mb-0">⭐ <%= nurse.average_rating %></p>
+      </div>
+
+      <div class="nurse-badges me-3">
+        <% nurse.specialties.each do |specialty| %>
+          <span class="badge-specialty"><%= specialty.name %></span>
+        <% end %>
+      </div>
+
+      <%= link_to "Voir le profil", nurse_path(nurse), class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
