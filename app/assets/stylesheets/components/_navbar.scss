@@ -1,6 +1,7 @@
 .navbar-lewagon {
   background: white;
   border-bottom: 1px solid #E5E7EB;
+  position: relative;
 
   .navbar-brand {
     color: $teal;
@@ -10,9 +11,9 @@
   }
 
   .navbar-nav.mx-auto {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    flex: 1;
+    justify-content: center;
+    padding-left: 200px;
   }
 
 .nav-link {

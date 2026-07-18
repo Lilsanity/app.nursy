@@ -1,25 +1,76 @@
-<div class="container mt-4">
-  <h1 class="mb-4">Infirmières disponibles</h1>
+<%# Bannière dégradé %>
+<div class="nurses-banner">
+  <div class="banner-left">
+    <h2><span class="banner-dot">●</span> Résultats pour Paris 75001</h2>
+    <p>12 infirmières disponibles · toutes vérifiées RPPS</p>
+  </div>
+  <div class="banner-center">
+    <i class="fas fa-map-marker-alt"></i> Paris 75001
+    <span class="banner-separator">|</span>
+    Modifier <i class="fas fa-edit"></i>
+  </div>
+  <div class="banner-right">
+    <span class="toggle-btn active"><i class="fas fa-list me-1"></i> Liste</span>
+    <span class="toggle-btn"><i class="fas fa-map me-1"></i> Carte</span>
+  </div>
+</div>
 
-  <% @nurses.each do |nurse| %>
-    <div class="nurse-card d-flex align-items-center p-3 mb-3">
-      <div class="nurse-avatar me-3">
-        <%= nurse.first_name[0] %><%= nurse.last_name[0] %>
-      </div>
+<%# Filtres %>
+<div class="nurses-filters">
+  <span class="filter-btn">Disponibilité</span>
+  <span class="filter-btn">Distance</span>
+  <span class="filter-btn">Spécialité</span>
+  <span class="filter-btn">Note minimale</span>
+  <span class="ms-auto text-muted">Trié par pertinence</span>
+</div>
 
-      <div class="flex-grow-1">
-        <h5 class="mb-1"><%= nurse.first_name %> <%= nurse.last_name %></h5>
-        <p class="mb-1 text-muted">📍 <%= nurse.commune.name %></p>
-        <p class="mb-0">⭐ <%= nurse.average_rating %></p>
-      </div>
-
-      <div class="nurse-badges me-3">
-        <% nurse.specialties.each do |specialty| %>
-          <span class="badge-specialty"><%= specialty.name %></span>
-        <% end %>
-      </div>
-
-      <%= link_to "Voir le profil", nurse_path(nurse), class: "btn btn-primary" %>
+<%# Liste + Carte %>
+<div class="container mt-3">
+  <div class="row d-flex align-items-stretch">
+    <div class="col-lg-8">
+      <% colors = ["teal", "purple", "orange", "green"] %>
+      <% specialty_colors = {
+           "Pansements complexes" => "badge-teal",
+           "Vaccination"          => "badge-blue",
+           "Soins Palliatifs"     => "badge-pink",
+           "Pédiatrie"            => "badge-purple",
+           "Gériatrie"            => "badge-orange"
+         } %>
+      <% @nurses.each_with_index do |nurse, index| %>
+        <% color = colors[index % colors.length] %>
+        <div class="nurse-card mb-3 card-<%= color %>">
+          <div class="nurse-avatar avatar-<%= color %>">
+            <%= nurse.first_name[0] %><%= nurse.last_name[0] %>
+            <span class="avatar-badge badge-<%= color %>-icon">
+              <i class="fas fa-user-check"></i>
+            </span>
+          </div>
+          <div>
+            <h5><%= nurse.first_name %> <%= nurse.last_name %></h5>
+            <p class="nurse-address"><i class="fas fa-map-marker-alt"></i> <%= nurse.commune.name %></p>
+            <p class="nurse-rating"><i class="fas fa-star"></i> <%= nurse.average_rating %></p>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <span class="badge-rpps">RPPS vérifié</span>
+            <span class="badge-dispo">Disponible aujourd'hui</span>
+            <% nurse.specialties.each do |specialty| %>
+              <% color_class = specialty_colors[specialty.name] || "badge-teal" %>
+              <span class="<%= color_class %>"><%= specialty.name %></span>
+            <% end %>
+          </div>
+          <%= link_to "Voir le profil", nurse_path(nurse), class: "btn btn-primary btn-sm" %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+
+    <div class="col-lg-4">
+      <div class="map-panel">
+        <h5>Infirmières autour de vous</h5>
+        <p class="text-muted">Paris 75001 · Île-de-France</p>
+        <div class="map-placeholder">
+          Carte à venir 🗺️
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

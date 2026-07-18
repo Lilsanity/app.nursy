@@ -10,3 +10,10 @@
 // Your CSS partials
 @import "components/index";
 @import "pages/index";
+@import "components/nurses";
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+@import "components/footer";

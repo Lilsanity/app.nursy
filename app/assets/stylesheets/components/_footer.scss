@@ -1,0 +1,20 @@
+.site-footer {
+  width: 100%;
+  text-align: center;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border-top: 1px solid #E5E7EB;
+  margin-top: 150px;
+}
+
+.site-footer p {
+  color: #6B7280;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
