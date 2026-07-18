@@ -5,4 +5,14 @@ class Nurse < ApplicationRecord
   has_many :availabilities, dependent: :destroy
   has_many :appointments, dependent: :destroy
   has_many :reviews, dependent: :destroy
+
+  searchkick locations: [:location]
+
+  def search_data
+    {
+      first_name: first_name,
+      last_name: last_name,
+      location: { lat: commune.latitude, lon: commune.longitude }
+    }
+  end
 end
