@@ -9,9 +9,9 @@ Commune.destroy_all
 User.destroy_all
 
 puts "Création des communes..."
-commune_paris = Commune.create!(name: "Paris", postal_code: "75001")
-commune_lyon = Commune.create!(name: "Lyon", postal_code: "69001")
-commune_marseille = Commune.create!(name: "Marseille", postal_code: "13001")
+commune_paris = Commune.create!(name: "Paris", postal_code: "75001", latitude: 48.8566, longitude: 2.3522)
+commune_lyon = Commune.create!(name: "Lyon", postal_code: "69001", latitude: 45.7640, longitude: 4.8357)
+commune_marseille = Commune.create!(name: "Marseille", postal_code: "13001", latitude: 43.2965, longitude: 5.3698)
 
 puts "Création des spécialités..."
 specialties = ["Pédiatrie", "Gériatrie", "Soins Palliatifs", "Pansements complexes", "Vaccination"]

@@ -21,7 +21,7 @@
       <div class="container-fluid">
         <%= link_to "Nursy", root_path, class: "navbar-brand" %>
 
-        <ul class="navbar-nav me-auto">
+        <ul class="navbar-nav mx-auto">
           <li class="nav-item">
             <%= link_to "Accueil", root_path, class: "nav-link" %>
           </li>
@@ -63,5 +63,8 @@
     <% end %>
 
     <%= yield %>
+    <footer class="site-footer">
+      <p>© 2026 Nursy — Tous droits réservés</p>
+    </footer>
   </body>
 </html>

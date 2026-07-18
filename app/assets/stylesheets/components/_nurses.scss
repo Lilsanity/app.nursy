@@ -1,0 +1,351 @@
+.nurses-banner {
+  background: linear-gradient(90deg, #0BBFAA, #0891B2);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Inter", sans-serif;
+  margin-bottom: 0;
+}
+  h2 {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .banner-center {
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 8px 18px;
+    margin-right: 100px;
+  }
+
+  .banner-right {
+    display: flex;
+    gap: 8px;
+  }
+
+  .toggle-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+
+    &.active {
+      background: white;
+      color: #0BBFAA;
+    }
+  }
+
+
+.nurses-filters {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  padding: 14px 24px;
+  border-bottom: 1px solid #E5E7EB;
+  background: #F9FAFB;
+  font-family: "Inter", sans-serif;
+  margin-top: 0;
+}
+
+.filter-btn {
+  background: white;
+  border: 2px solid #E5E7EB;
+  border-radius: 50px;
+  padding: 10px 22px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: "Inter", sans-serif;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $teal;
+    color: $teal;
+  }
+}
+
+.nurse-card {
+  background: white;
+  border-radius: 16px;
+  font-family: "Inter", sans-serif;
+  padding: 12px 24px;
+  height: 80px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 48px 220px 1fr 140px;
+  align-items: center;
+  gap: 16px;
+  max-width: 92%;
+}
+
+.card-teal   { border: 3px solid #0EA5A0; border-left: 6px solid #0EA5A0; }
+.card-purple { border: 3px solid #8B5CF6; border-left: 6px solid #8B5CF6; }
+.card-orange { border: 3px solid #F59E0B; border-left: 6px solid #F59E0B; }
+.card-green  { border: 3px solid #10B981; border-left: 6px solid #10B981; }
+
+.nurse-card .btn-primary {
+  background: linear-gradient(90deg, #0BBFAA, #0891B2);
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  padding: 8px 20px;
+  color: white;
+}
+
+.nurse-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.avatar-badge i {
+  font-size: 11px;
+  color: white;
+}
+
+.badge-teal-icon   { background: #0EA5A0; }
+.badge-purple-icon { background: #8B5CF6; }
+.badge-orange-icon { background: #F59E0B; }
+.badge-green-icon  { background: #10B981; }
+
+.avatar-teal   { background: linear-gradient(135deg, #0EA5A0, #FFFFFF); }
+.avatar-purple { background: linear-gradient(135deg, #8B5CF6, #FFFFFF); }
+.avatar-orange { background: linear-gradient(135deg, #F59E0B, #FFFFFF); }
+.avatar-green  { background: linear-gradient(135deg, #10B981, #FFFFFF); }
+
+.nurse-card h5 {
+  font-weight: 700;
+  font-size: 16px;
+  font-family: "Inter", sans-serif;
+  color: #1A1A1A;
+  margin-bottom: 4px;
+}
+
+.nurse-address, .nurse-rating {
+  color: #6B7280;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+}
+
+.nurse-address i {
+  color: #9CA3AF;
+  margin-right: 3px;
+}
+
+.nurse-rating i {
+  color: #F59E0B;
+  margin-right: 3px;
+}
+
+.badge-rpps {
+  background: #E0F5F4;
+  color: #0F766E;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-dispo {
+  background: #DCFCE7;
+  color: #16A34A;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-teal {
+  background: #E6FAF7;
+  color: #0D9488;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-blue {
+  background: #EFF6FF;
+  color: #2563EB;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-purple {
+  background: #EEF2FF;
+  color: #7C3AED;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-orange {
+  background: #FFF7ED;
+  color: #C2410C;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-pink {
+  background: #FDF2F8;
+  color: #DB2777;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-green {
+  background: #D1FAE5;
+  color: #059669;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.banner-separator {
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 8px;
+}
+
+.banner-dot {
+  color: #A7F3D0;
+  font-size: 10px;
+  margin-right: 6px;
+}
+
+.nurses-filters .text-muted {
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  color: #9CA3AF !important;
+}
+
+.map-panel {
+  background: white;
+  border: 2px solid #0BBFAA;
+  border-radius: 16px;
+  padding: 20px;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  h5 {
+    font-weight: 700;
+    font-size: 16px;
+    color: #1A1A1A;
+    margin-bottom: 4px;
+  }
+}
+
+.map-placeholder {
+  background: #F9FAFB;
+  border-radius: 12px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9CA3AF;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.nurses-shift {
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-top: 32px;
+  padding-bottom: 60px;
+  background: #FFFFFF;
+}
+
+body {
+  background: #FFFFFF;
+}
+
+.map-count {
+  background: #E6FAF7;
+  color: #0D9488;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.map-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px 0;
+  font-size: 11px;
+  color: #6B7280;
+  font-family: "Inter", sans-serif;
+}
+
+.map-legend .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.dot-teal   { background: #0EA5A0; }
+.dot-orange { background: #F59E0B; }
+.dot-blue   { background: #3B82F6; }
+
+.map-expand {
+  margin-left: auto;
+  color: #0EA5A0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.custom-map-badge {
+  background: transparent !important;
+  border: none !important;
+}

@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
+  # Authentification
+  devise_for :users
 
   # Page d'accueil
-  devise_for :users
   root to: "pages#home"
 
   # Infirmières
