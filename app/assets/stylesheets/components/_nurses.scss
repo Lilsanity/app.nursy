@@ -91,6 +91,7 @@
   grid-template-columns: 48px 220px 1fr 140px;
   align-items: center;
   gap: 16px;
+  max-width: 92%;
 }
 
 .card-teal   { border: 3px solid #0EA5A0; border-left: 6px solid #0EA5A0; }
@@ -265,7 +266,7 @@
 
 .map-panel {
   background: white;
-  border: 1px solid #E5E7EB;
+  border: 2px solid #0BBFAA;
   border-radius: 16px;
   padding: 20px;
   font-family: "Inter", sans-serif;
@@ -291,4 +292,60 @@
   color: #9CA3AF;
   font-size: 14px;
   margin-top: 12px;
+}
+
+.nurses-shift {
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-top: 32px;
+  padding-bottom: 60px;
+  background: #FFFFFF;
+}
+
+body {
+  background: #FFFFFF;
+}
+
+.map-count {
+  background: #E6FAF7;
+  color: #0D9488;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.map-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 4px 0;
+  font-size: 11px;
+  color: #6B7280;
+  font-family: "Inter", sans-serif;
+}
+
+.map-legend .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+.dot-teal   { background: #0EA5A0; }
+.dot-orange { background: #F59E0B; }
+.dot-blue   { background: #3B82F6; }
+
+.map-expand {
+  margin-left: auto;
+  color: #0EA5A0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.custom-map-badge {
+  background: transparent !important;
+  border: none !important;
 }

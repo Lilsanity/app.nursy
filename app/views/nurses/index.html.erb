@@ -25,8 +25,8 @@
 </div>
 
 <%# Liste + Carte %>
-<div class="container mt-3">
-  <div class="row d-flex align-items-stretch">
+<div class="container-fluid mt-5 nurses-shift">
+  <div class="row g-4 d-flex align-items-stretch">
     <div class="col-lg-8">
       <% colors = ["teal", "purple", "orange", "green"] %>
       <% specialty_colors = {
@@ -65,10 +65,24 @@
 
     <div class="col-lg-4">
       <div class="map-panel">
-        <h5>Infirmières autour de vous</h5>
-        <p class="text-muted">Paris 75001 · Île-de-France</p>
-        <div class="map-placeholder">
-          Carte à venir 🗺️
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h5>Infirmières autour de vous</h5>
+            <p class="text-muted">Paris 75001 · Île-de-France</p>
+          </div>
+          <span class="map-count"><%= @nurses.count %> disponibles</span>
+        </div>
+        <div
+          data-controller="map"
+          data-map-nurses-value="<%= @nurses.each_with_index.map { |n, i| { name: "#{n.first_name} #{n.last_name}", initials: "#{n.first_name[0]}#{n.last_name[0]}", commune: n.commune.name, lat: n.commune.latitude, lng: n.commune.longitude, rating: n.average_rating, color: colors[i % colors.length] } }.to_json %>"
+          class="map-placeholder"
+          style="height: 100%; padding: 0; position: relative;"
+        ></div>
+        <div class="map-legend">
+          <span><span class="dot dot-teal"></span> Disponible</span>
+          <span><span class="dot dot-orange"></span> Demain</span>
+          <span><span class="dot dot-blue"></span> Vous</span>
+          <a href="#" class="map-expand">Agrandir</a>
         </div>
       </div>
     </div>
