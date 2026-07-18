@@ -1,1 +1,63 @@
 // Specific CSS for your home-page
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(120deg, #17b39a 0%, #1f6f9e 100%);
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero-content { max-width: 700px; width: 100%; }
+
+.hero-title { font-size: 2.2rem; font-weight: 700; margin-bottom: 10px; }
+.hero-subtitle { font-size: 1rem; opacity: 0.9; margin-bottom: 30px; }
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  padding: 6px;
+  max-width: 520px;
+  margin: 0 auto 40px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+.search-icon { padding: 0 12px; color: #17b39a; }
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  padding: 10px;
+  color: #333;
+}
+.search-btn {
+  background: #0f5c56;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stats { display: flex; justify-content: center; gap: 60px; margin-bottom: 30px; }
+.stat { display: flex; flex-direction: column; }
+.stat-number { font-size: 1.6rem; font-weight: 700; }
+.stat-label { font-size: 0.85rem; opacity: 0.85; }
+
+.badges { display: flex; justify-content: center; gap: 20px; }
+.badge {
+  background: rgba(255,255,255,0.15);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+/* Zone de résultats */
+.results { padding: 60px 20px; max-width: 900px; margin: 0 auto; }
+.results-title { font-size: 1.5rem; margin-bottom: 20px; }
+.results-placeholder { color: #777; }

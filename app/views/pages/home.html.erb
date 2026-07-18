@@ -1,2 +1,43 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+<div class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">Une infirmière près de chez vous, en quelques clics</h1>
+    <p class="hero-subtitle">Des soins à domicile, partout en France</p>
+
+    <%= form_with url: root_path, method: :get, local: true, class: "search-bar" do |f| %>
+      <span class="search-icon">📍</span>
+      <%= f.text_field :commune, placeholder: "Entrez votre commune...", class: "search-input" %>
+      <%= f.submit "Rechercher", class: "search-btn" %>
+    <% end %>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-number">1200+</span>
+        <span class="stat-label">Infirmières</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">850+</span>
+        <span class="stat-label">Communes couvertes</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">4.8/5</span>
+        <span class="stat-label">Note moyenne</span>
+      </div>
+    </div>
+
+    <div class="badges">
+      <span class="badge">Infirmières vérifiées RPPS</span>
+      <span class="badge">Disponibilité en temps réel</span>
+    </div>
+  </div>
+</div>
+
+<%# Zone de résultats : s'affiche seulement après une recherche %>
+<% if params[:commune].present? %>
+  <section class="results">
+    <h2 class="results-title">Résultats pour « <%= params[:commune] %> »</h2>
+    <div class="results-list">
+      <%# Ici tu boucleras sur les resultats Elasticsearch %>
+      <p class="results-placeholder">Les résultats s'afficheront ici une fois Elasticsearch branché.</p>
+    </div>
+  </section>
+<% end %>
