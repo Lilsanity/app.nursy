@@ -5,23 +5,14 @@
 
     <%= form_with url: root_path, method: :get, local: true, class: "search-bar" do |f| %>
       <span class="search-icon">📍</span>
-      <%= f.text_field :commune, placeholder: "Entrez votre commune...", class: "search-input" %>
+      <%= f.text_field :commune, value: params[:commune], placeholder: "Entrez votre commune...", class: "search-input" %>
       <%= f.submit "Rechercher", class: "search-btn" %>
     <% end %>
 
     <div class="stats">
-      <div class="stat">
-        <span class="stat-number">1200+</span>
-        <span class="stat-label">Infirmières</span>
-      </div>
-      <div class="stat">
-        <span class="stat-number">850+</span>
-        <span class="stat-label">Communes couvertes</span>
-      </div>
-      <div class="stat">
-        <span class="stat-number">4.8/5</span>
-        <span class="stat-label">Note moyenne</span>
-      </div>
+      <div class="stat"><span class="stat-number">1200+</span><span class="stat-label">Infirmières</span></div>
+      <div class="stat"><span class="stat-number">850+</span><span class="stat-label">Communes couvertes</span></div>
+      <div class="stat"><span class="stat-number">4.8/5</span><span class="stat-label">Note moyenne</span></div>
     </div>
 
     <div class="badges">
@@ -31,13 +22,19 @@
   </div>
 </div>
 
-<%# Zone de résultats : s'affiche seulement après une recherche %>
 <% if params[:commune].present? %>
-  <section class="results">
-    <h2 class="results-title">Résultats pour « <%= params[:commune] %> »</h2>
-    <div class="results-list">
-      <%# Ici tu boucleras sur les resultats Elasticsearch %>
-      <p class="results-placeholder">Les résultats s'afficheront ici une fois Elasticsearch branché.</p>
-    </div>
+  <section class="home-results container my-5" data-controller="scroll-into-view">
+    <% if @nurses.any? %>
+      <h2 class="results-title">Infirmières disponibles près de <%= @commune.name %></h2>
+      <div class="results-grid">
+        <% colors = ["teal", "purple", "orange", "green"] %>
+        <% @nurses.each_with_index do |nurse, index| %>
+          <% color = colors[index % colors.length] %>
+          <%= render "nurses/nurse_card", nurse: nurse, color: color %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-muted">Aucune infirmière trouvée près de « <%= params[:commune] %> ».</p>
+    <% end %>
   </section>
 <% end %>

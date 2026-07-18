@@ -73,3 +73,5 @@ group :test do
 end
 
 gem "devise", "~> 5.0"
+gem "searchkick"
+gem "elasticsearch", ">= 8", "< 9"

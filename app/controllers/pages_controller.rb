@@ -1,8 +1,15 @@
 class PagesController < ApplicationController
   def home
     if params[:commune].present?
-      @nurses = Nurse.search_by_location(params[:commune])
-      #set up elasticsearch à faire sur une autre branche
+      commune = Commune.find_by("name ILIKE ?", params[:commune])
+      @commune = commune
+      @nurses = if commune
+        Nurse.search("*",
+          where: { location: { near: { lat: commune.latitude, lon: commune.longitude }, within: "30km" } }
+        )
+      else
+        Nurse.none
+      end
     end
   end
 end
