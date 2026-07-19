@@ -1,0 +1,15 @@
+<div class="container my-5" style="max-width: 800px;">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold mt-3">Demande envoyée !</h2>
+  </div>
+
+  <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="p-3 rounded-3 mb-3" style="background: #e0f2f1;">
+      <small class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.7rem;">Créneau demandé</small>
+      <span class="fw-bold"><%= l(@appointment.availability.start_time, format: "%A %Hh%M") %></span>
+    </div>
+
+    <%= link_to "Voir dans Mon espace", my_space_path, class: "btn w-100 py-3 mb-2 fw-bold text-white", style: "background: #007c91;" %>
+    <%= link_to "Retour à la recherche", nurses_path, class: "btn w-100 py-3 fw-bold", style: "color: #007c91; border: 1px solid #007c91;" %>
+  </div>
+</div>
