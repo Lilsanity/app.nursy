@@ -1,12 +1,9 @@
 class NursesController < ApplicationController
-  def index # rubocop:disable Metrics/MethodLength
+  def index
     if params[:commune].present?
       commune = Commune.find_by("name ILIKE ?", params[:commune])
       if commune
-        @nurses = Nurse.search("*",
-                               where: {
-                                 location: { near: { lat: commune.latitude, lon: commune.longitude }, within: "30km" }
-                               })
+        @nurses = Nurse.joins(:commune).where(communes: { id: commune.id })
         @commune = commune
       else
         @nurses = Nurse.none
