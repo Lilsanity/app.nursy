@@ -16,13 +16,23 @@
 </div>
 
 <%# Filtres %>
-<div class="nurses-filters">
-  <span class="filter-btn">Disponibilité</span>
-  <span class="filter-btn">Distance</span>
-  <span class="filter-btn">Spécialité</span>
-  <span class="filter-btn">Note minimale</span>
-  <span class="ms-auto text-muted">Trié par pertinence</span>
-</div>
+<%= form_with url: nurses_path, method: :get, local: true do %>
+  <%= hidden_field_tag :commune, params[:commune] if params[:commune].present? %>
+  <div class="nurses-filters">
+    <span class="filter-btn">Disponibilité</span>
+    <span class="filter-btn">Distance</span>
+    <span class="filter-btn">Spécialité</span>
+
+    <select name="min_rating" class="filter-select" onchange="this.form.requestSubmit()">
+      <option value="">Note minimale</option>
+      <option value="3" <%= "selected" if params[:min_rating] == "3" %>>3 étoiles et +</option>
+      <option value="4" <%= "selected" if params[:min_rating] == "4" %>>4 étoiles et +</option>
+      <option value="4.5" <%= "selected" if params[:min_rating] == "4.5" %>>4.5 étoiles et +</option>
+    </select>
+
+    <span class="ms-auto text-muted">Trié par pertinence</span>
+  </div>
+<% end %>
 
 <%# Liste + Carte %>
 <div class="container-fluid mt-5 nurses-shift">
