@@ -25,9 +25,12 @@
 <% if params[:commune].present? %>
   <section class="home-results container my-5" data-controller="scroll-into-view">
     <% if @nurses.any? %>
-      <h2 class="results-title">
-        Infirmières disponibles <%= @commune ? "près de #{@commune.name}" : "pour votre recherche" %>
-      </h2>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="results-title">
+          Infirmières disponibles <%= @commune ? "près de #{@commune.name}" : "pour votre recherche" %>
+        </h2>
+        <%= link_to "Voir tous les résultats →", nurses_path(commune: params[:commune]), class: "see-all-link" %>
+      </div>
       <div class="results-grid">
         <% colors = ["teal", "purple", "orange", "green"] %>
         <% @nurses.each_with_index do |nurse, index| %>

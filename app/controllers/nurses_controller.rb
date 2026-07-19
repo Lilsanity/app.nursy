@@ -12,17 +12,17 @@ class NursesController < ApplicationController
     else
       @nurses = Nurse.all
     end
+
+    @nurses = @nurses.where("average_rating >= ?", params[:min_rating]) if params[:min_rating].present?
   end
 
   def show
     @nurse = Nurse.includes(:commune, :specialties).find(params[:id])
-
     @availabilities = @nurse.availabilities
                             .where(is_booked: false)
                             .where('start_time >= ?', Time.current)
                             .order(:start_time)
                             .limit(6)
-
     @reviews = @nurse.reviews.includes(:user).order(created_at: :desc)
   end
 end
