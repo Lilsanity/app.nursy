@@ -35,6 +35,7 @@ Ruby version: 3.3.5 (see `.ruby-version`).
 - **Generators**: configured in `config/application.rb` to skip generating assets, helpers, and fixtures by default (`generate.assets false`, `generate.helper false`, `generate.test_framework :test_unit, fixture: false`).
 - **Deployment**: Kamal (`config/deploy.yml`, `.kamal/`) deploying as a Docker container (`Dockerfile`), fronted by Thruster for asset caching/compression and X-Sendfile acceleration.
 - **Testing**: Minitest with fixtures (despite the generator default above, `test_helper.rb` loads `fixtures :all`), parallelized by default. Capybara + Selenium available for system tests but not wired into `bin/ci`. Controller/model tests exist for the current domain models (`test/models/*`, `test/controllers/nurses_controller_test.rb`); tests exercising `NursesController#index`/`PagesController#home` depend on Elasticsearch being reachable.
+- **Note**: `config/routes.rb` declares `resources :appointments, only: [:new, :create, :show]`, but no `AppointmentsController` exists yet under `app/controllers` — the `Appointment` model and its fixtures/tests are in place, but the controller/views are still to be built.
 
 ## Linting notes
 
