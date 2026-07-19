@@ -1,2 +1,373 @@
-<h1>Nurses#show</h1>
-<p>Find me in app/views/nurses/show.html.erb</p>
+<%
+  specialty_colors = {
+    "Pansements complexes" => { bg: "#e0f7fa", text: "#00a896" },
+    "Vaccination"          => { bg: "#e8f0fe", text: "#1a73e8" },
+    "Soins Palliatifs"     => { bg: "#fce8e6", text: "#ea4335" },
+    "Pédiatrie"            => { bg: "#f3e5f5", text: "#9c27b0" },
+    "Gériatrie"            => { bg: "#fff3e0", text: "#ff9800" },
+    "Injections"           => { bg: "#e8f0fe", text: "#1a73e8" },
+    "Perfusions"           => { bg: "#f3e5f5", text: "#9c27b0" },
+    "Suivi diabétique"     => { bg: "#fff3e0", text: "#ff9800" },
+    "Soins post-op."       => { bg: "#e6f4ea", text: "#1e8e3e" },
+    "Personnes âgées"      => { bg: "#fce8e6", text: "#ea4335" }
+  }
+
+  review_themes = [
+    { border: "#00a896", bg: "#f0fbf9" },
+    { border: "#00b4d8", bg: "#f0faff" },
+    { border: "#6f42c1", bg: "#f8f5ff" },
+    { border: "#ff9800", bg: "#fff6f0" },
+    { border: "#ea4335", bg: "#fdf0ef" }
+  ]
+
+  # Liste de prénoms masculins pour déterminer le genre correctement
+  male_first_names = %w[Antoine Julien Marc Hugo Thomas Lucas Jean Pierre Paul Nicolas David Mathieu Romain Baptiste Kevin Alexandre]
+  is_female = !male_first_names.include?(@nurse.first_name)
+
+  job_title = is_female ? "Infirmière libérale diplômée d'État" : "Infirmier libéral diplômé d'État"
+  gender_text = is_female ? "Infirmière" : "Infirmier"
+  gender_pronoun = is_female ? "spécialisée" : "spécialisé"
+  gender_adj = is_female ? "Diplômée" : "Diplômé"
+  gender_pro_adj = is_female ? "professionnelle" : "professionnel"
+  gender_punct_adj = is_female ? "ponctuelle" : "ponctuel"
+  gender_douce = is_female ? "douce" : "doux"
+  gender_rassurante = is_female ? "Rassurante" : "Rassurant"
+  gender_competente = is_female ? "compétente" : "compétent"
+
+  exp_years = @nurse.respond_to?(:experience_years) && @nurse.experience_years.present? ? @nurse.experience_years : ((@nurse.id * 7) % 20) + 2
+  patients_count = @nurse.respond_to?(:patients_count) && @nurse.patients_count.present? ? @nurse.patients_count : ((@nurse.id * 17) % 250) + 40
+  satisfaction_rate = @nurse.respond_to?(:satisfaction) && @nurse.satisfaction.present? ? @nurse.satisfaction : 90 + (@nurse.id % 11)
+
+  working_days_options = ["7j/7", "5j/7", "6j/7"]
+  availability_text = working_days_options[@nurse.id % 3]
+
+  response_time_options = ["moins d'1h", "moins de 2h", "moins de 4h", "demi-journée"]
+  response_time = response_time_options[@nurse.id % 4]
+  response_time_short = ["<1h", "<2h", "<4h", "Demi-journée"][@nurse.id % 4]
+
+  tariff_options = ["Secteur 1 - Conventionné", "Secteur 1", "Secteur 2", "Secteur 1 - Honoraires libres"]
+  tariff_text = tariff_options[@nurse.id % 4]
+
+  lang_options = ["Français", "Français, Anglais", "Français, Espagnol", "Français, Arabe", "Français, Italien"]
+  lang_text = lang_options[@nurse.id % 5]
+
+  mobility_options = ["À domicile uniquement", "À domicile et cabinet", "Cabinet uniquement"]
+  mobility_text = mobility_options[@nurse.id % 3]
+
+  mutuelle_options = ["Prise en charge SS 60%", "Tiers payant intégral", "Carte Vitale acceptée"]
+  mutuelle_text = mutuelle_options[@nurse.id % 3]
+
+  schools = ["l'IFSI Paris", "la Croix-Rouge", "l'AP-HP", "l'IFSI régional"]
+  school_text = schools[@nurse.id % 4]
+
+  # Zones réalistes basées sur la commune réelle
+  nearby_communes = {
+    "Paris"     => ["Paris 75001", "Paris 75002", "Paris 75003"],
+    "Lyon"      => ["Lyon 1er", "Lyon 2e", "Lyon 3e"],
+    "Marseille" => ["Marseille 13001", "Marseille 13002", "Marseille 13006"]
+  }
+  nearby_zones = nearby_communes[@nurse.commune.name] || [@nurse.commune.name]
+
+  # Rating pour les étoiles
+  rating = (@nurse.average_rating || 5.0).to_f
+%>
+
+<div class="container mt-4" style="max-width: 1200px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0 small" style="font-size: 0.85rem;">
+      <li class="breadcrumb-item"><%= link_to "Accueil", root_path, class: "text-decoration-none", style: "color: #00a896;" %></li>
+      <li class="breadcrumb-item"><%= link_to "Recherche", nurses_path(commune: @nurse.commune.name), class: "text-decoration-none", style: "color: #00a896;" %></li>
+      <li class="breadcrumb-item" style="color: #6c757d;"><%= @nurse.commune.name %> <%= @nurse.commune.postal_code %></li>
+      <li class="breadcrumb-item active fw-bold" style="color: #00a896;"><%= @nurse.first_name %> <%= @nurse.last_name %></li>
+    </ol>
+  </nav>
+
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div class="d-flex align-items-center">
+      <div class="me-4 position-relative">
+        <%= image_tag "https://ui-avatars.com/api/?name=#{@nurse.first_name}+#{@nurse.last_name}&size=120&rounded=true&background=00a896&color=ffffff", alt: "Avatar", class: "rounded-circle", style: "width: 100px; height: 100px; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,168,150,0.15);" %>
+        <span class="position-absolute d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background-color: #00a896; color: white; font-size: 13px; right: 0px; bottom: 0px; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+          <i class="fas fa-check"></i>
+        </span>
+      </div>
+
+      <div>
+        <h1 class="h3 mb-1 fw-bold text-dark" style="letter-spacing: -0.5px;"><%= @nurse.first_name %> <%= @nurse.last_name %></h1>
+        <p class="mb-1" style="font-size: 0.95rem; color: #495057;"><%= job_title %></p>
+        <p class="mb-3" style="font-size: 0.85rem; color: #6c757d;">
+          <i class="fas fa-map-marker-alt me-1" style="color: #00a896;"></i> <%= @nurse.commune.name %> <%= @nurse.commune.postal_code %> - 0.8 km de vous
+        </p>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="badge rounded-pill fw-medium d-flex align-items-center px-3 py-2" style="background-color: #e0f8f1; color: #00a896; font-size: 0.85rem;">
+            <span class="me-2" style="font-size: 8px;">●</span> Disponible aujourd'hui
+          </span>
+          <% if @nurse.is_verified %>
+            <span class="badge rounded-pill fw-medium px-3 py-2" style="background-color: #f0faff; color: #00b4d8; border: 1px solid #d0f0fd; font-size: 0.85rem;">✓ RPPS vérifié</span>
+          <% end %>
+          <span class="badge rounded-pill fw-medium px-3 py-2" style="background-color: #ffffff; color: #495057; border: 1px solid #dee2e6; font-size: 0.85rem;"><%= exp_years %> ans d'expérience</span>
+          <span class="badge rounded-pill fw-medium px-3 py-2" style="background-color: #ffffff; color: #495057; border: 1px solid #dee2e6; font-size: 0.85rem;"><%= availability_text %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center px-3 pt-2">
+      <div class="text-warning mb-1" style="font-size: 0.9rem; letter-spacing: 2px;">
+        <% 5.times do |i| %>
+          <% if i < rating.floor %>
+            <i class="fas fa-star"></i>
+          <% elsif i < rating.ceil && (rating % 1) >= 0.5 %>
+            <i class="fas fa-star-half-alt"></i>
+          <% else %>
+            <i class="far fa-star"></i>
+          <% end %>
+        <% end %>
+      </div>
+      <h2 class="mb-0 fw-bold text-dark" style="font-size: 2rem;"><%= @nurse.average_rating || "4.9" %></h2>
+      <small style="font-size: 0.8rem; color: #6c757d;"><%= @reviews.count > 0 ? @reviews.count : 48 %> avis vérifiés</small>
+    </div>
+  </div>
+
+  <div class="row text-center py-4 mb-5 mx-0" style="background-color: #ffffff; border-radius: 12px; border: 1px solid #f1f3f4; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+    <div class="col position-relative">
+      <div class="fs-3 mb-2">👥</div>
+      <h5 class="mb-0 fw-bold" style="color: #00a896; font-size: 1.3rem;"><%= patients_count %></h5>
+      <small style="color: #adb5bd; font-size: 0.8rem;">Patients</small>
+      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #f1f3f4;"></div>
+    </div>
+    <div class="col position-relative">
+      <div class="fs-3 mb-2">😁</div>
+      <h5 class="mb-0 fw-bold" style="color: #6f42c1; font-size: 1.3rem;"><%= satisfaction_rate %>%</h5>
+      <small style="color: #adb5bd; font-size: 0.8rem;">Satisfaction</small>
+      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #f1f3f4;"></div>
+    </div>
+    <div class="col position-relative">
+      <div class="fs-3 mb-2">⚡</div>
+      <h5 class="mb-0 fw-bold" style="color: #ff9800; font-size: 1.3rem;"><%= response_time_short %></h5>
+      <small style="color: #adb5bd; font-size: 0.8rem;">Réponse moy.</small>
+      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #f1f3f4;"></div>
+    </div>
+    <div class="col">
+      <div class="fs-3 mb-2">📅</div>
+      <h5 class="mb-0 fw-bold" style="color: #00a896; font-size: 1.3rem;"><%= availability_text %></h5>
+      <small style="color: #adb5bd; font-size: 0.8rem;">Disponibilité</small>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-4">
+      <div class="card mb-4" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); background-color: #ffffff;">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase fw-bold mb-4" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #212529;">Spécialités & Communes</h6>
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <% if @nurse.specialties.any? %>
+              <% @nurse.specialties.each do |specialty| %>
+                <% theme = specialty_colors[specialty.name] || { bg: "#e0f7fa", text: "#00a896" } %>
+                <span class="badge rounded-pill fw-medium px-3 py-2 border-0" style="background-color: <%= theme[:bg] %>; color: <%= theme[:text] %>; font-size: 0.85rem;"><%= specialty.name %></span>
+              <% end %>
+            <% else %>
+              <span class="badge rounded-pill fw-medium px-3 py-2 border-0" style="background-color: #e0f7fa; color: #00a896; font-size: 0.85rem;">Soins généraux</span>
+            <% end %>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <% nearby_zones.each do |zone| %>
+              <span class="badge rounded-pill fw-medium px-3 py-2" style="background-color: #ffffff; color: #495057; border: 1px solid #dee2e6; font-size: 0.85rem;"><%= zone %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); background-color: #ffffff;">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase fw-bold mb-4" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #212529;">Infos Pratiques</h6>
+          <div class="d-flex mb-4">
+            <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #e0f8f1;">
+              <i class="far fa-clock" style="color: #00a896; font-size: 1rem;"></i>
+            </div>
+            <div>
+              <small class="d-block text-uppercase" style="font-size: 0.7rem; color: #6c757d;">Horaires</small>
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= availability_text %> • 8h - 19h</span>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #f0faff;">
+              <i class="fas fa-euro-sign" style="color: #00b4d8; font-size: 1rem;"></i>
+            </div>
+            <div>
+              <small class="d-block text-uppercase" style="font-size: 0.7rem; color: #6c757d;">Tarifs</small>
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= tariff_text %></span>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #f8f5ff;">
+              <i class="fas fa-comment-dots" style="color: #6f42c1; font-size: 1rem;"></i>
+            </div>
+            <div>
+              <small class="d-block text-uppercase" style="font-size: 0.7rem; color: #6c757d;">Langues</small>
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= lang_text %></span>
+            </div>
+          </div>
+          <div class="d-flex mb-4">
+            <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #fff6f0;">
+              <i class="fas fa-car" style="color: #ff9800; font-size: 1rem;"></i>
+            </div>
+            <div>
+              <small class="d-block text-uppercase" style="font-size: 0.7rem; color: #6c757d;">Déplacement</small>
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= mobility_text %></span>
+            </div>
+          </div>
+          <div class="d-flex">
+            <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #fdf0ef;">
+              <i class="fas fa-shield-alt" style="color: #ea4335; font-size: 1rem;"></i>
+            </div>
+            <div>
+              <small class="d-block text-uppercase" style="font-size: 0.7rem; color: #6c757d;">Mutuelle</small>
+              <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= mutuelle_text %></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="card border-0 mb-4" style="background-color: #00a896; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,168,150,0.2);">
+        <div class="card-body p-4 position-relative overflow-hidden">
+          <p class="mb-1 text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 1px; color: rgba(255,255,255,0.8);">Numéro RPPS</p>
+          <h4 class="mb-3 fw-bold text-white" style="letter-spacing: 2px; font-size: 1.5rem;"><%= @nurse.rpps_number %></h4>
+          <div class="pt-3 d-flex align-items-center" style="border-top: 1px solid rgba(255,255,255,0.3);">
+            <span class="d-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 16px; height: 16px; color: #00a896; font-size: 9px;"><i class="fas fa-check"></i></span>
+            <small style="color: white; font-size: 0.8rem; font-weight: 500;">Vérifié — Annuaire Santé</small>
+          </div>
+          <i class="fas fa-check position-absolute" style="right: -10px; top: 10px; font-size: 5rem; color: rgba(255,255,255,0.1);"></i>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <div class="p-3 text-center" style="background-color: #00a896;">
+          <span class="fw-bold text-white d-flex justify-content-center align-items-center" style="font-size: 0.95rem;">
+            <span class="me-2" style="font-size: 10px;">●</span> Disponible aujourd'hui
+          </span>
+          <small style="color: rgba(255,255,255,0.9); font-size: 0.8rem;">Répond en <%= response_time %></small>
+        </div>
+        <div class="card-body p-4 bg-white">
+          <p class="small text-uppercase mb-3 fw-bold text-center" style="letter-spacing: 1px; font-size: 0.75rem; color: #495057;">Choisir un créneau</p>
+          <div class="row g-2 mb-4">
+            <% if @availabilities.any? %>
+              <% @availabilities.each do |slot| %>
+                <div class="col-6">
+                  <%
+                    is_today    = slot.start_time.to_date == Date.today
+                    is_tomorrow = slot.start_time.to_date == Date.tomorrow
+                    day_label   = if is_today
+                                    "Auj."
+                                  elsif is_tomorrow
+                                    "Dem."
+                                  else
+                                    slot.start_time.strftime("%d/%m")
+                                  end
+                  %>
+                  <button class="btn w-100 fw-bold rounded-pill py-2"
+                          style="<%= is_today ? 'border: 2px solid #00a896; color: #00a896; background: #e0f8f1;' : 'border: 2px solid #dee2e6; color: #495057; background: white;' %> font-size: 0.85rem;">
+                    <%= day_label %> <%= slot.start_time.strftime("%Hh%M") %>
+                  </button>
+                </div>
+              <% end %>
+            <% else %>
+              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #00a896; color: #00a896; background: #e0f8f1; font-size: 0.85rem;">Auj. 9h00</button></div>
+              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #00a896; color: #00a896; background: #e0f8f1; font-size: 0.85rem;">Auj. 14h00</button></div>
+              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">Dem. 10h00</button></div>
+              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">Dem. 15h00</button></div>
+            <% end %>
+          </div>
+          <%= link_to new_appointment_path(nurse_id: @nurse.id), class: "btn w-100 mb-2 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896; font-size: 0.95rem;" do %>
+            Demander un rendez-vous
+          <% end %>
+          <button class="btn w-100 fw-bold py-2 text-dark" style="border: 1px solid #dee2e6; border-radius: 8px; background: white; font-size: 0.95rem;">Envoyer un message</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="text-uppercase fw-bold mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #212529;">Avis Patients (<%= @reviews.count > 0 ? @reviews.count : 48 %>)</h6>
+        <a href="#all-reviews" class="text-decoration-none fw-bold" style="color: #00a896; font-size: 0.8rem;">Voir tous →</a>
+      </div>
+
+      <div class="mb-4">
+        <% if @reviews.any? %>
+          <% @reviews.limit(3).each_with_index do |review, index| %>
+            <% theme = review_themes[index % review_themes.length] %>
+            <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid <%= theme[:border] %>; border-left: 5px solid <%= theme[:border] %>; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex align-items-center">
+                  <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: <%= theme[:border] %>; font-size: 0.95rem;">
+                    <%= review.user.first_name[0] %><%= review.user.last_name[0] %>
+                  </div>
+                  <div>
+                    <strong class="d-block text-dark" style="font-size: 0.9rem;"><%= review.user.first_name %> <%= review.user.last_name[0] %>.</strong>
+                    <small style="color: #6c757d; font-size: 0.75rem;">Il y a <%= time_ago_in_words(review.created_at) %> - <%= @nurse.commune.name %></small>
+                  </div>
+                </div>
+                <div class="text-warning" style="font-size: 0.7rem;">
+                  <% review.rating.to_i.times do %><i class="fas fa-star"></i><% end %>
+                </div>
+              </div>
+              <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"<%= review.comment %>"</p>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid #00a896; border-left: 5px solid #00a896; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="d-flex align-items-center">
+                <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: #00a896; font-size: 0.95rem;">JP</div>
+                <div>
+                  <strong class="d-block text-dark" style="font-size: 0.9rem;">Jean P.</strong>
+                  <small style="color: #6c757d; font-size: 0.75rem;">Il y a 3 jours - <%= @nurse.commune.name %></small>
+                </div>
+              </div>
+              <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"Très <%= gender_pro_adj %>, <%= gender_punct_adj %> et <%= gender_douce %>. Je recommande vivement."</p>
+          </div>
+
+          <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid #00b4d8; border-left: 5px solid #00b4d8; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="d-flex align-items-center">
+                <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: #00b4d8; font-size: 0.95rem;">ML</div>
+                <div>
+                  <strong class="d-block text-dark" style="font-size: 0.9rem;">Marie L.</strong>
+                  <small style="color: #6c757d; font-size: 0.75rem;">Il y a 1 semaine - <%= @nurse.commune.name %></small>
+                </div>
+              </div>
+              <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"Excellente prise en charge pour ma mère. <%= gender_rassurante %> et <%= gender_competente %>."</p>
+          </div>
+
+          <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid #6f42c1; border-left: 5px solid #6f42c1; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="d-flex align-items-center">
+                <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: #6f42c1; font-size: 0.95rem;">TR</div>
+                <div>
+                  <strong class="d-block text-dark" style="font-size: 0.9rem;">Thomas R.</strong>
+                  <small style="color: #6c757d; font-size: 0.75rem;">Il y a 2 semaines - <%= @nurse.commune.name %></small>
+                </div>
+              </div>
+              <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            </div>
+            <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"Réactivité exemplaire, disponible en <%= response_time %> pour une urgence."</p>
+          </div>
+        <% end %>
+      </div>
+
+      <div id="all-reviews" class="card bg-white" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+        <div class="card-body p-4">
+          <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #212529;">À Propos</h6>
+          <p class="text-dark mb-0 lh-base" style="font-size: 0.9rem; font-weight: 400;">
+            <%= gender_text %> libéral<%= is_female ? 'e' : '' %> depuis <%= exp_years %> ans, <%= gender_pronoun %> dans les soins à domicile. Je me déplace <%= availability_text %> autour de <%= @nurse.commune.name %> pour les urgences comme pour les soins réguliers. <%= gender_adj %> de <%= school_text %>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

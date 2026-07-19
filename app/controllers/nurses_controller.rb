@@ -18,6 +18,14 @@ class NursesController < ApplicationController
   end
 
   def show
-    @nurse = Nurse.find(params[:id])
+    @nurse = Nurse.includes(:commune, :specialties).find(params[:id])
+
+    @availabilities = @nurse.availabilities
+                            .where(is_booked: false)
+                            .where('start_time >= ?', Time.current)
+                            .order(:start_time)
+                            .limit(6)
+
+    @reviews = @nurse.reviews.includes(:user).order(created_at: :desc)
   end
 end
