@@ -362,6 +362,13 @@ body {
   color: #6B7280;
   cursor: pointer;
   appearance: none;
+  text-align: center;
+  text-align-last: center;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: $teal;
 }
 
 .filter-select:focus {

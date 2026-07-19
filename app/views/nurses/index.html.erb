@@ -18,12 +18,19 @@
 <%# Filtres %>
 <%= form_with url: nurses_path, method: :get, local: true do %>
   <%= hidden_field_tag :commune, params[:commune] if params[:commune].present? %>
+  <%= hidden_field_tag :min_rating, params[:min_rating] if params[:min_rating].present? %>
   <div class="nurses-filters">
     <span class="filter-btn">Disponibilité</span>
     <span class="filter-btn">Distance</span>
-    <span class="filter-btn">Spécialité</span>
 
-    <select name="min_rating" class="filter-select" onchange="this.form.requestSubmit()">
+    <select name="specialty" class="filter-select" data-autosize="true" onchange="this.form.requestSubmit()">
+      <option value="">Spécialité</option>
+      <% Specialty.order(:name).each do |specialty| %>
+        <option value="<%= specialty.name %>" <%= "selected" if params[:specialty] == specialty.name %>><%= specialty.name %></option>
+      <% end %>
+    </select>
+
+    <select name="min_rating" class="filter-select" data-autosize="true" onchange="this.form.requestSubmit()">
       <option value="">Note minimale</option>
       <option value="3" <%= "selected" if params[:min_rating] == "3" %>>3 étoiles et +</option>
       <option value="4" <%= "selected" if params[:min_rating] == "4" %>>4 étoiles et +</option>
@@ -33,6 +40,28 @@
     <span class="ms-auto text-muted">Trié par pertinence</span>
   </div>
 <% end %>
+
+<script>
+  function autosizeSelect(select) {
+    const temp = document.createElement("span");
+    temp.style.visibility = "hidden";
+    temp.style.position = "absolute";
+    temp.style.whiteSpace = "nowrap";
+    temp.style.fontFamily = getComputedStyle(select).fontFamily;
+    temp.style.fontSize = getComputedStyle(select).fontSize;
+    temp.style.fontWeight = getComputedStyle(select).fontWeight;
+    temp.innerText = select.options[select.selectedIndex].text;
+    document.body.appendChild(temp);
+    const textWidth = temp.getBoundingClientRect().width;
+    document.body.removeChild(temp);
+    select.style.width = (textWidth + 50) + "px";
+  }
+
+  document.querySelectorAll('[data-autosize="true"]').forEach((select) => {
+    autosizeSelect(select);
+    select.addEventListener("change", () => autosizeSelect(select));
+  });
+</script>
 
 <%# Liste + Carte %>
 <div class="container-fluid mt-5 nurses-shift">

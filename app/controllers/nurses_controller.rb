@@ -14,6 +14,9 @@ class NursesController < ApplicationController
     end
 
     @nurses = @nurses.where("average_rating >= ?", params[:min_rating]) if params[:min_rating].present?
+    return unless params[:specialty].present?
+
+    @nurses = @nurses.joins(:specialties).where(specialties: { name: params[:specialty] }).distinct
   end
 
   def show
