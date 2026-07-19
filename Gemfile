@@ -74,4 +74,4 @@ end
 
 gem "devise", "~> 5.0"
 gem "searchkick"
-gem "elasticsearch", ">= 8", "< 9"
+gem "opensearch-ruby"
