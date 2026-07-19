@@ -1,0 +1,92 @@
+<div style="background: linear-gradient(135deg, #00bfa5 0%, #007c91 100%); color: white; padding: 1.2rem 0;">
+  <div class="container">
+    <div class="d-flex align-items-center">
+      <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(255,255,255,0.2);">
+        <%= @user.first_name[0] %><%= @user.last_name[0] %>
+      </div>
+      <div>
+        <h2 class="mb-0 h6 fw-bold"><%= @user.first_name %> <%= @user.last_name %></h2>
+        <small class="opacity-75" style="font-size: 0.8rem;">Patient</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container my-4">
+  <h4 class="fw-bold mb-1">Mes rendez-vous</h4>
+  <p class="text-muted mb-4" style="font-size: 0.9rem;">Gérer et suivre vos rendez-vous à domicile</p>
+
+  <div class="row">
+    <div class="col-md-4">
+      <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.8rem;">Calendrier</h6>
+      <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background-color: #ffffff;">
+        <div style="height: 4px; background: linear-gradient(to right, #00bfa5, #007c91);"></div>
+        <div class="p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0 text-capitalize" style="font-size: 0.9rem;"><%= l(Date.today, format: "%B %Y") %></h6>
+            <div>
+              <button class="btn btn-sm border-0 p-0 text-primary"><</button>
+              <button class="btn btn-sm border-0 p-0 text-primary">></button>
+            </div>
+          </div>
+          <div class="row text-center mb-2">
+            <% %w[LU MA ME JE VE SA DI].each do |day| %>
+              <div class="col text-muted fw-bold" style="font-size: 0.65rem;"><%= day %></div>
+            <% end %>
+          </div>
+          <div class="row text-center">
+            <% first_day = Date.today.beginning_of_month %>
+            <% (1..first_day.wday - 1).each do |_| %>
+              <div class="col-1" style="width: 14.28%;"></div>
+            <% end %>
+            <% (first_day..first_day.end_of_month).each do |date| %>
+              <div class="col-1 p-1" style="width: 14.28%;">
+                <div class="<%= date == Date.today ? 'border border-primary rounded-2 text-primary' : '' %>" style="width: 26px; height: 26px; line-height: 26px; margin: auto; font-size: 0.75rem;">
+                  <%= date.day %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3 g-2">
+        <% [{n: 3, t: "Demandes", c: "#e0f2f1"}, {n: 2, t: "En cours", c: "#ede7f6"}, {n: 1, t: "Terminé", c: "#fff3e0"}, {n: "4.9", t: "Note", c: "#e8f5e9"}].each do |box| %>
+          <div class="col-3">
+            <div class="card p-2 text-center border-0 shadow-sm rounded-3" style="background: <%= box[:c] %>;">
+              <div class="fw-bold" style="font-size: 0.85rem;"><%= box[:n] %></div>
+              <small style="font-size: 0.6rem;"><%= box[:t] %></small>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.8rem;">Rendez-vous à venir</h6>
+      <% @appointments.each do |appointment| %>
+        <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden">
+          <div style="height: 5px; background: <%= appointment.status == 'Confirmé' ? '#00bfa5' : '#7e57c2' %>;"></div>
+          <div class="p-3 d-flex align-items-center">
+            <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px; background: <%= appointment.status == 'Confirmé' ? '#00bfa5' : '#7e57c2' %>; font-size: 0.9rem;">
+              <%= appointment.nurse.first_name[0] %><%= appointment.nurse.last_name[0] %>
+            </div>
+            <div style="flex-grow: 1;">
+              <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h6>
+              <div class="d-flex gap-3" style="font-size: 0.75rem; color: #6c757d;">
+                <span>🕒 <%= appointment.created_at.strftime("%Hh%M") %></span>
+                <span>🏠 À domicile</span>
+              </div>
+            </div>
+            <div class="text-end me-4">
+              <div class="fw-bold" style="font-size: 1rem;"><%= appointment.price %> €</div>
+            </div>
+            <div>
+               <button class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;">Annuler</button>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn w-100 py-3 mt-1 fw-bold rounded-4", style: "background: #f1f8f7; color: #007c91; border: 1px dashed #007c91; font-size: 0.9rem;" %>
+    </div>
+  </div>
+</div>
