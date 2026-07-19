@@ -25,7 +25,9 @@
 <% if params[:commune].present? %>
   <section class="home-results container my-5" data-controller="scroll-into-view">
     <% if @nurses.any? %>
-      <h2 class="results-title">Infirmières disponibles près de <%= @commune.name %></h2>
+      <h2 class="results-title">
+        Infirmières disponibles <%= @commune ? "près de #{@commune.name}" : "pour votre recherche" %>
+      </h2>
       <div class="results-grid">
         <% colors = ["teal", "purple", "orange", "green"] %>
         <% @nurses.each_with_index do |nurse, index| %>
