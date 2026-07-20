@@ -249,7 +249,7 @@
           </span>
           <small style="color: rgba(255,255,255,0.9); font-size: 0.8rem;">Répond en <%= response_time %></small>
         </div>
-        <div class="card-body p-4 bg-white">
+        <div class="card-body p-4 bg-white" data-controller="slot-picker">
           <p class="small text-uppercase mb-3 fw-bold text-center" style="letter-spacing: 1px; font-size: 0.75rem; color: #495057;">Choisir un créneau</p>
           <div class="row g-2 mb-4">
             <% if @availabilities.any? %>
@@ -266,8 +266,13 @@
                                     slot.start_time.strftime("%d/%m")
                                   end
                   %>
-                  <button class="btn w-100 fw-bold rounded-pill py-2"
-                          style="<%= is_today ? 'border: 2px solid #00a896; color: #00a896; background: #e0f8f1;' : 'border: 2px solid #dee2e6; color: #495057; background: white;' %> font-size: 0.85rem;">
+                  <button type="button"
+                          class="btn w-100 fw-bold rounded-pill py-2"
+                          data-slot-picker-target="option"
+                          data-action="click->slot-picker#select"
+                          data-availability-id="<%= slot.id %>"
+                          data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>"
+                          style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">
                     <%= day_label %> <%= slot.start_time.strftime("%Hh%M") %>
                   </button>
                 </div>
@@ -279,10 +284,41 @@
               <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">Dem. 15h00</button></div>
             <% end %>
           </div>
-          <%= link_to new_appointment_path(nurse_id: @nurse.id), class: "btn w-100 mb-2 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896; font-size: 0.95rem;" do %>
+          <button type="button"
+                  class="btn w-100 mb-2 fw-bold py-2 text-white"
+                  data-slot-picker-target="submit"
+                  data-bs-toggle="modal"
+                  data-bs-target="#confirmAppointmentModal"
+                  disabled
+                  style="border-radius: 8px; background: #00a896; font-size: 0.95rem;">
             Demander un rendez-vous
-          <% end %>
+          </button>
           <button class="btn w-100 fw-bold py-2 text-dark" style="border: 1px solid #dee2e6; border-radius: 8px; background: white; font-size: 0.95rem;">Envoyer un message</button>
+
+          <div class="modal fade" id="confirmAppointmentModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content rounded-4 border-0 shadow-sm">
+                <div class="modal-body p-4 text-center">
+                  <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: #e0f8f1;">
+                    <i class="fas fa-calendar-check" style="color: #00a896; font-size: 1.4rem;"></i>
+                  </div>
+                  <h5 class="fw-bold mb-2">Confirmer le rendez-vous ?</h5>
+                  <p class="text-muted mb-4">
+                    Avec <strong><%= @nurse.first_name %> <%= @nurse.last_name %></strong><br>
+                    <span data-slot-picker-target="modalDatetime"></span>
+                  </p>
+                  <%= form_with model: Appointment.new, url: appointments_path, local: true do |f| %>
+                    <%= f.hidden_field :nurse_id, value: @nurse.id %>
+                    <%= f.hidden_field :availability_id, data: { slot_picker_target: "availabilityInput" } %>
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Annuler</button>
+                      <%= f.submit "Confirmer", class: "btn w-50 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896;" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

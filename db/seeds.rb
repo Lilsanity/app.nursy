@@ -59,23 +59,27 @@ nurses_data.each do |attrs|
 
   specialty_objects.sample(rand(1..2)).each { |s| NurseSpecialty.create!(nurse: nurse, specialty: s) }
 
-  availabilities = 3.times.map do |j|
-  hour = [8, 9, 10, 11, 14, 15, 16, 17].sample
-  Availability.create!(
-    nurse: nurse,
-    start_time: DateTime.now.beginning_of_day + j.days + hour.hours,
-    end_time:   DateTime.now.beginning_of_day + j.days + hour.hours + 1.hour,
-    is_booked: false
-  )
+  availabilities = (0..3).flat_map do |j|
+    [8, 9, 10, 11, 14, 15, 16, 17].sample(3).map do |hour|
+      Availability.create!(
+        nurse: nurse,
+        start_time: DateTime.now.beginning_of_day + j.days + hour.hours,
+        end_time:   DateTime.now.beginning_of_day + j.days + hour.hours + 1.hour,
+        is_booked: false
+      )
+    end
   end
 
   users.sample(rand(2..4)).each do |user|
-    availability = availabilities.sample
+    availability = availabilities.reject(&:is_booked).sample
+    next unless availability
+
     appointment = Appointment.create!(
       nurse: nurse,
       user: user,
       availability: availability
     )
+    availability.update!(is_booked: true)
     Review.create!(
       nurse:       nurse,
       user:        user,
@@ -106,23 +110,27 @@ paris_nurses.each do |attrs|
 
   specialty_objects.sample(rand(1..2)).each { |s| NurseSpecialty.create!(nurse: nurse, specialty: s) }
 
-  availabilities = 3.times.map do |j|
-  hour = [8, 9, 10, 11, 14, 15, 16, 17].sample
-  Availability.create!(
-    nurse: nurse,
-    start_time: DateTime.now.beginning_of_day + j.days + hour.hours,
-    end_time:   DateTime.now.beginning_of_day + j.days + hour.hours + 1.hour,
-    is_booked: false
-  )
+  availabilities = (0..3).flat_map do |j|
+    [8, 9, 10, 11, 14, 15, 16, 17].sample(3).map do |hour|
+      Availability.create!(
+        nurse: nurse,
+        start_time: DateTime.now.beginning_of_day + j.days + hour.hours,
+        end_time:   DateTime.now.beginning_of_day + j.days + hour.hours + 1.hour,
+        is_booked: false
+      )
+    end
   end
 
   users.sample(rand(3..5)).each do |user|
-    availability = availabilities.sample
+    availability = availabilities.reject(&:is_booked).sample
+    next unless availability
+
     appointment = Appointment.create!(
       nurse: nurse,
       user: user,
       availability: availability
     )
+    availability.update!(is_booked: true)
     Review.create!(
       nurse:       nurse,
       user:        user,
