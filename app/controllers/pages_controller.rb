@@ -10,4 +10,9 @@ class PagesController < ApplicationController
     @user = current_user
     @appointments = @user.appointments.includes(:nurse).order(created_at: :desc)
   end
+
+  def confirmation
+    @appointment = Appointment.find(params[:id])
+    @user = current_user # Assicurati di avere il current_user disponibile
+  end
 end
