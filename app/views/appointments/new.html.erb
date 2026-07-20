@@ -6,7 +6,13 @@
 
     <div class="mb-3">
       <%= f.label :availability_id, "Choisissez un créneau", class: "form-label" %>
-      <%= f.collection_select :availability_id, @availabilities, :id, :start_time, { prompt: "Sélectionnez un horaire" }, { class: "form-control" } %>
+      <% if @availabilities.any? %>
+        <%= f.collection_select :availability_id, @availabilities, :id, ->(a) { a.start_time.strftime("%d/%m/%Y %H:%M") }, { prompt: "Sélectionnez un horaire" }, { class: "form-control" } %>
+      <% else %>
+        <div class="alert alert-warning">
+          Aucun créneau disponible pour le moment. Veuillez revenir plus tard.
+        </div>
+      <% end %>
     </div>
 
     <div class="mb-3">
