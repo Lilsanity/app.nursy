@@ -13,9 +13,10 @@ module AppNursy
     end
 
     config.load_defaults 8.1
+    config.i18n.available_locales = [:en, :fr]
+    config.i18n.default_locale = :fr
 
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.i18n.default_locale = :fr
   end
 end
