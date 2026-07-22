@@ -364,6 +364,12 @@ body {
   appearance: none;
   text-align: center;
   text-align-last: center;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $teal;
+    color: $teal;
+  }
 }
 
 .filter-select:focus {
@@ -371,7 +377,66 @@ body {
   border-color: $teal;
 }
 
-.filter-select:focus {
+.banner-modify-link {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+#banner-location-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+}
+
+.banner-location-input {
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
   outline: none;
-  border-color: $teal;
+}
+
+.banner-location-submit {
+  background: white;
+  color: #0BBFAA;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.no-results {
+  background: white;
+  border: none;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+
+  h5 {
+    font-weight: 700;
+    font-size: 18px;
+    color: #1A1A1A;
+    margin: 12px 0 6px;
+  }
+
+  p {
+    color: #6B7280;
+    font-size: 14px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+.no-results-icon {
+  font-size: 32px;
+  color: #D1D5DB;
 }
