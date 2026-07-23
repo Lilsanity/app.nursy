@@ -4,24 +4,122 @@
     <h2><span class="banner-dot">●</span> Résultats pour Paris 75001</h2>
     <p>12 infirmières disponibles · toutes vérifiées RPPS</p>
   </div>
-  <div class="banner-center">
-    <i class="fas fa-map-marker-alt"></i> Paris 75001
-    <span class="banner-separator">|</span>
-    Modifier <i class="fas fa-edit"></i>
+  <div class="banner-center" id="banner-location">
+    <span id="banner-location-display">
+      <i class="fas fa-map-marker-alt" onclick="geolocateUser()" style="cursor: pointer;" title="Me géolocaliser"></i> <%= params[:commune]&.capitalize || "Paris 75001" %>
+      <span class="banner-separator">|</span>
+      <a href="#" class="banner-modify-link" onclick="toggleCommuneEdit(event)">Modifier <i class="fas fa-edit"></i></a>
+    </span>
+
+    <%= form_with url: nurses_path, method: :get, local: true, id: "banner-location-form", class: "d-none" do %>
+      <%= hidden_field_tag :min_rating, params[:min_rating] if params[:min_rating].present? %>
+      <%= hidden_field_tag :specialty, params[:specialty] if params[:specialty].present? %>
+      <%= hidden_field_tag :availability, params[:availability] if params[:availability].present? %>
+      <%= hidden_field_tag :distance, params[:distance] if params[:distance].present? %>
+      <%= hidden_field_tag :sort, params[:sort] if params[:sort].present? %>
+      <i class="fas fa-map-marker-alt"></i>
+      <%= text_field_tag :commune, params[:commune], placeholder: "Entrez votre commune...", class: "banner-location-input" %>
+      <button type="submit" class="banner-location-submit"><i class="fas fa-check"></i></button>
+    <% end %>
   </div>
   <div class="banner-right">
-    <span class="toggle-btn active"><i class="fas fa-list me-1"></i> Liste</span>
-    <span class="toggle-btn"><i class="fas fa-map me-1"></i> Carte</span>
+    <span class="toggle-btn active" id="btn-view-list" onclick="switchView('list')"><i class="fas fa-list me-1"></i> Liste</span>
+    <span class="toggle-btn" id="btn-view-map" onclick="switchView('map')"><i class="fas fa-map me-1"></i> Carte</span>
   </div>
 </div>
+
+<script>
+  function toggleCommuneEdit(e) {
+    e.preventDefault();
+    document.getElementById("banner-location-display").classList.add("d-none");
+    document.getElementById("banner-location-form").classList.remove("d-none");
+    document.querySelector(".banner-location-input").focus();
+  }
+
+  function geolocateUser() {
+    if (!navigator.geolocation) {
+      alert("La géolocalisation n'est pas supportée par ton navigateur.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const address = data.address || {};
+            const city = address.city || address.town || address.village || address.municipality;
+
+            if (city) {
+              window.location.href = "<%= nurses_path %>?commune=" + encodeURIComponent(city);
+            } else {
+              alert("Impossible de déterminer ta ville.");
+            }
+          })
+          .catch(() => {
+            alert("Erreur lors de la récupération de ta position.");
+          });
+      },
+      () => {
+        alert("Impossible d'accéder à ta position. Vérifie les autorisations de ton navigateur.");
+      }
+    );
+  }
+
+  function switchView(view) {
+    const listBtn = document.getElementById("btn-view-list");
+    const mapBtn = document.getElementById("btn-view-map");
+    const listCol = document.getElementById("view-list-col");
+    const mapCol = document.getElementById("view-map-col");
+
+    if (view === "list") {
+      listCol.classList.remove("d-none");
+      listCol.classList.add("col-lg-8");
+      mapCol.classList.remove("d-none");
+      mapCol.classList.add("col-lg-4");
+      mapCol.classList.remove("col-lg-12");
+      listBtn.classList.add("active");
+      mapBtn.classList.remove("active");
+    } else {
+      listCol.classList.add("d-none");
+      mapCol.classList.remove("col-lg-4");
+      mapCol.classList.add("col-lg-12");
+      mapBtn.classList.add("active");
+      listBtn.classList.remove("active");
+    }
+
+    setTimeout(() => {
+      const mapElement = document.querySelector('[data-controller="map"]');
+      if (mapElement && mapElement.mapInstance) {
+        mapElement.mapInstance.invalidateSize();
+      }
+    }, 100);
+  }
+</script>
 
 <%# Filtres %>
 <%= form_with url: nurses_path, method: :get, local: true do %>
   <%= hidden_field_tag :commune, params[:commune] if params[:commune].present? %>
   <%= hidden_field_tag :min_rating, params[:min_rating] if params[:min_rating].present? %>
+  <%= hidden_field_tag :specialty, params[:specialty] if params[:specialty].present? %>
+  <%= hidden_field_tag :availability, params[:availability] if params[:availability].present? %>
   <div class="nurses-filters">
-    <span class="filter-btn">Disponibilité</span>
-    <span class="filter-btn">Distance</span>
+    <select name="availability" class="filter-select" data-autosize="true" onchange="this.form.requestSubmit()">
+      <option value="">Disponibilité</option>
+      <option value="today" <%= "selected" if params[:availability] == "today" %>>Disponible aujourd'hui</option>
+      <option value="week" <%= "selected" if params[:availability] == "week" %>>Disponible cette semaine</option>
+    </select>
+
+    <select name="distance" class="filter-select" data-autosize="true" onchange="this.form.requestSubmit()">
+      <option value="">Distance</option>
+      <option value="5" <%= "selected" if params[:distance] == "5" %>>Moins de 5 km</option>
+      <option value="10" <%= "selected" if params[:distance] == "10" %>>Moins de 10 km</option>
+      <option value="20" <%= "selected" if params[:distance] == "20" %>>Moins de 20 km</option>
+      <option value="50" <%= "selected" if params[:distance] == "50" %>>Moins de 50 km</option>
+    </select>
 
     <select name="specialty" class="filter-select" data-autosize="true" onchange="this.form.requestSubmit()">
       <option value="">Spécialité</option>
@@ -37,7 +135,11 @@
       <option value="4.5" <%= "selected" if params[:min_rating] == "4.5" %>>4.5 étoiles et +</option>
     </select>
 
-    <span class="ms-auto text-muted">Trié par pertinence</span>
+    <select name="sort" class="filter-select ms-auto" data-autosize="true" onchange="this.form.requestSubmit()">
+      <option value="">Trié par pertinence</option>
+      <option value="rating" <%= "selected" if params[:sort] == "rating" %>>Meilleure note</option>
+      <option value="distance" <%= "selected" if params[:sort] == "distance" %>>Plus proche</option>
+    </select>
   </div>
 <% end %>
 
@@ -66,29 +168,43 @@
 <%# Liste + Carte %>
 <div class="container-fluid mt-5 nurses-shift">
   <div class="row g-4 d-flex align-items-stretch">
-    <div class="col-lg-8">
-      <% colors = ["teal", "purple", "orange", "green"] %>
-      <% specialty_colors = {
-           "Pansements complexes" => "badge-teal",
-           "Vaccination"          => "badge-blue",
-           "Soins Palliatifs"     => "badge-pink",
-           "Pédiatrie"            => "badge-purple",
-           "Gériatrie"            => "badge-orange"
-         } %>
-      <% @nurses.each_with_index do |nurse, index| %>
-        <% color = colors[index % colors.length] %>
-        <%= render "nurses/nurse_card", nurse: nurse, color: color %>
+    <div class="col-lg-8" id="view-list-col">
+      <% if @nurses.to_a.empty? %>
+        <div class="no-results">
+          <i class="fas fa-map-marker-alt no-results-icon"></i>
+          <h5>Aucune infirmière trouvée</h5>
+          <p class="text-muted">
+            <% if params[:commune].present? %>
+              Nous n'avons pas encore de disponibilités près de « <%= params[:commune] %> ». Essaie Paris, Lyon ou Marseille.
+            <% else %>
+              Essaie d'ajuster tes filtres ou de rechercher une autre ville.
+            <% end %>
+          </p>
+        </div>
+      <% else %>
+        <% colors = ["teal", "purple", "orange", "green"] %>
+        <% specialty_colors = {
+             "Pansements complexes" => "badge-teal",
+             "Vaccination"          => "badge-blue",
+             "Soins Palliatifs"     => "badge-pink",
+             "Pédiatrie"            => "badge-purple",
+             "Gériatrie"            => "badge-orange"
+           } %>
+        <% @nurses.each_with_index do |nurse, index| %>
+          <% color = colors[index % colors.length] %>
+          <%= render "nurses/nurse_card", nurse: nurse, color: color %>
+        <% end %>
       <% end %>
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-lg-4" id="view-map-col">
       <div class="map-panel">
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <h5>Infirmières autour de vous</h5>
             <p class="text-muted">Paris 75001 · Île-de-France</p>
           </div>
-          <span class="map-count"><%= @nurses.count %> disponibles</span>
+          <span class="map-count"><%= @nurses.to_a.size %> disponibles</span>
         </div>
         <div
           data-controller="map"

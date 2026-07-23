@@ -13,6 +13,7 @@ export default class extends Controller {
 
   connect() {
     this.map = L.map(this.element)
+    this.element.mapInstance = this.map
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
