@@ -1,15 +1,134 @@
-<div class="container my-5" style="max-width: 800px;">
-  <div class="text-center mb-4">
-    <h2 class="fw-bold mt-3">Demande envoyée !</h2>
+<%
+  nurse = @appointment.nurse
+  rating = (nurse.average_rating || 5.0).to_f
+  response_time_options = ["moins d'1h", "moins de 2h", "moins de 4h", "demi-journée"]
+  response_time = response_time_options[nurse.id % 4]
+  steps = ["Demande envoyée", "En attente de réponse", "Confirmation reçue", "Soin à domicile"]
+  muted_green = "#2f6e61"
+
+  specialty_colors = {
+    "Pansements complexes" => { bg: "#e0f7fa", text: "#00a896" },
+    "Vaccination"          => { bg: "#e8f0fe", text: "#1a73e8" },
+    "Soins Palliatifs"     => { bg: "#fce8e6", text: "#ea4335" },
+    "Pédiatrie"            => { bg: "#f3e5f5", text: "#9c27b0" },
+    "Gériatrie"            => { bg: "#fff3e0", text: "#ff9800" },
+    "Injections"           => { bg: "#e8f0fe", text: "#1a73e8" },
+    "Perfusions"           => { bg: "#f3e5f5", text: "#9c27b0" },
+    "Suivi diabétique"     => { bg: "#fff3e0", text: "#ff9800" },
+    "Soins post-op."       => { bg: "#e6f4ea", text: "#1e8e3e" },
+    "Personnes âgées"      => { bg: "#fce8e6", text: "#ea4335" }
+  }
+  specialty = nurse.specialties.first
+  specialty_theme = specialty_colors[specialty&.name] || { bg: "#e0f7fa", text: "#00a896" }
+%>
+
+<div class="container pt-2 pb-3" style="max-width: 640px;">
+  <div class="text-center mb-2">
+    <div class="position-relative mx-auto mb-1 d-flex align-items-center justify-content-center" style="width: 90px; height: 90px;">
+      <div class="position-absolute rounded-circle" style="width: 80px; height: 80px; background: #00d4b0; opacity: 0.5; filter: blur(26px);"></div>
+      <div class="position-absolute rounded-circle" style="width: 120px; height: 120px; background: #00d4b0; opacity: 0.22; filter: blur(20px);"></div>
+      <div class="rounded-circle d-flex align-items-center justify-content-center position-relative" style="width: 60px; height: 60px; background: linear-gradient(135deg, #1fd1ac, #00a896); box-shadow: 0 8px 20px rgba(0,168,150,0.45);">
+        <i class="fas fa-check" style="color: white; font-size: 1.6rem;"></i>
+      </div>
+    </div>
+    <h2 class="fw-bold mb-1" style="font-size: 1.4rem;">Demande envoyée !</h2>
+    <p class="mb-0" style="color: <%= muted_green %>; font-size: 0.85rem;">
+      <%= nurse.first_name %> <%= nurse.last_name %> a reçu votre demande et vous répondra sous <%= response_time %> par SMS et e-mail.
+    </p>
   </div>
 
-  <div class="card border-0 shadow-sm rounded-4 p-4">
-    <div class="p-3 rounded-3 mb-3" style="background: #e0f2f1;">
-      <small class="text-uppercase text-muted fw-bold d-block" style="font-size: 0.7rem;">Créneau demandé</small>
-      <span class="fw-bold"><%= l(@appointment.availability.start_time, format: "%A %Hh%M") %></span>
+  <div class="card border-0 shadow-sm rounded-4 p-3 mb-2" style="background: #ffffff;">
+    <div class="d-flex justify-content-between align-items-start mb-2 p-2 rounded-3" style="background: linear-gradient(135deg, #e6f7f3, #eaf3fb);">
+      <div class="d-flex align-items-center">
+        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-2" style="width: 40px; height: 40px; background: #00a896; box-shadow: 0 0 0 3px <%= specialty_theme[:bg] %>;">
+          <%= nurse.first_name[0] %><%= nurse.last_name[0] %>
+        </div>
+        <div>
+          <h6 class="fw-bold mb-0"><%= nurse.first_name %> <%= nurse.last_name %></h6>
+          <small class="d-block" style="color: <%= muted_green %>;"><%= nurse.commune.name %> <%= nurse.commune.postal_code %></small>
+          <div class="d-flex align-items-center gap-2">
+            <div class="text-warning" style="font-size: 0.75rem;">
+              <% 5.times do |i| %>
+                <% if i < rating.floor %>
+                  <i class="fas fa-star"></i>
+                <% elsif i < rating.ceil && (rating % 1) >= 0.5 %>
+                  <i class="fas fa-star-half-alt"></i>
+                <% else %>
+                  <i class="far fa-star"></i>
+                <% end %>
+              <% end %>
+            </div>
+            <small class="fw-bold" style="color: <%= muted_green %>;"><%= rating %></small>
+            <span class="badge rounded-pill fw-medium d-flex align-items-center px-2 py-1" style="background-color: #ffffff; color: #00a896; font-size: 0.7rem;">
+              <span class="me-1" style="font-size: 8px;">●</span> Disponible aujourd'hui
+            </span>
+          </div>
+        </div>
+      </div>
+      <small class="text-end" style="color: <%= muted_green %>;">
+        Réf. demande<br><span class="fw-bold" style="color: #00a896;">#NRS-<%= @appointment.id %></span>
+      </small>
     </div>
 
-    <%= link_to "Voir dans Mon espace", my_space_path, class: "btn w-100 py-3 mb-2 fw-bold text-white", style: "background: #007c91;" %>
-    <%= link_to "Retour à la recherche", nurses_path, class: "btn w-100 py-3 fw-bold", style: "color: #007c91; border: 1px solid #007c91;" %>
+    <div class="row g-2 mb-2">
+      <div class="col-6">
+        <div class="p-2 rounded-3 h-100" style="background: #e0f2f1;">
+          <small class="text-uppercase fw-bold d-block" style="font-size: 0.7rem; color: <%= muted_green %>;">Créneau demandé</small>
+          <span class="fw-bold"><%= l(@appointment.availability.start_time, format: "%A %d %B à %Hh%M") %></span>
+        </div>
+      </div>
+      <% if specialty %>
+        <div class="col-6">
+          <div class="p-2 rounded-3 h-100" style="background: <%= specialty_theme[:bg] %>;">
+            <small class="text-uppercase fw-bold d-block" style="font-size: 0.7rem; color: <%= specialty_theme[:text] %>;">Spécialité</small>
+            <span class="fw-bold"><%= specialty.name %></span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="p-2 rounded-3 mb-2 d-flex align-items-center" style="background: #fff8e1; border: 1px solid #ffe9a8;">
+      <i class="fas fa-hourglass-half me-2" style="color: #ff9800;"></i>
+      <div>
+        <span class="fw-bold d-block" style="font-size: 0.85rem; color: #ff9800;">En attente de confirmation</span>
+        <small style="color: <%= muted_green %>;"><%= nurse.first_name %> va accepter ou proposer un autre créneau</small>
+      </div>
+    </div>
+
+    <small class="text-uppercase fw-bold d-block mb-1" style="font-size: 0.65rem; letter-spacing: 0.5px; color: <%= muted_green %>;">Suivi de votre demande</small>
+    <div class="d-flex align-items-start mb-2" style="font-size: 0.7rem;">
+      <% steps.each_with_index do |step, i| %>
+        <% unless i == 0 %>
+          <div class="mt-2 flex-fill" style="height: 2px; background: <%= i == 1 ? "#ff9800" : "#cceee2" %>;"></div>
+        <% end %>
+        <div class="text-center" style="width: 80px;">
+          <div class="rounded-circle mx-auto mb-1 d-flex align-items-center justify-content-center fw-bold"
+               style="width: 24px; height: 24px; font-size: 0.7rem; <%= i == 0 ? 'background: #00a896; color: white;' : (i == 1 ? 'background: #fff3e0; color: #ff9800; border: 2px solid #ff9800;' : 'background: #cceee2; color: #2f6e61; border: 1px solid #a3ddc7;') %>">
+            <% if i == 0 %><i class="fas fa-check"></i><% else %><%= i + 1 %><% end %>
+          </div>
+          <span style="color: <%= i <= 1 ? "#2f5f56" : "#2f6e61" %>;"><%= step %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <%= link_to "Voir dans Mon espace", my_space_path, class: "btn w-100 py-2 mb-1 fw-bold text-white", style: "background: #007c91; border-radius: 8px;" %>
+    <%= link_to "Retour à la recherche", nurses_path, class: "btn w-100 py-2 fw-bold mb-2", style: "color: #007c91; border: 1px solid #007c91; border-radius: 8px;" %>
+
+    <div class="d-flex" style="border-top: 1px solid #eef2f1; padding-top: 0.5rem;">
+      <div class="d-flex align-items-center flex-fill">
+        <i class="fas fa-mobile-alt me-2" style="color: #00a896;"></i>
+        <div>
+          <small class="fw-bold d-block">SMS envoyé</small>
+          <small style="font-size: 0.65rem; color: <%= muted_green %>;">Confirmation dès acceptation</small>
+        </div>
+      </div>
+      <div class="d-flex align-items-center flex-fill">
+        <i class="fas fa-envelope me-2" style="color: <%= specialty_theme[:text] %>;"></i>
+        <div>
+          <small class="fw-bold d-block">E-mail envoyé</small>
+          <small style="font-size: 0.65rem; color: <%= muted_green %>;">Récapitulatif dans votre boîte</small>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
