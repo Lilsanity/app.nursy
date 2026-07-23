@@ -21,7 +21,6 @@
   </div>
   <div class="d-flex gap-2 flex-wrap">
     <span class="badge-rpps">RPPS vérifié</span>
-    <span class="badge-dispo">Disponible aujourd'hui</span>
     <% nurse.specialties.each do |specialty| %>
       <% color_class = specialty_colors[specialty.name] || "badge-teal" %>
       <span class="<%= color_class %>"><%= specialty.name %></span>
