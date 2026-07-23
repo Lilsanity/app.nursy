@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   resources :nurses, only: [:index, :show]
 
-  resources :appointments, only: [:new, :create, :show]
+  resources :appointments, only: [:create, :show]
 
   get "my-space", to: "pages#my_space", as: :my_space
 

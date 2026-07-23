@@ -1,19 +1,12 @@
 class AppointmentsController < ApplicationController
-  def new
-    @nurse = Nurse.find(params[:nurse_id])
-    @appointment = Appointment.new
-    @availabilities = @nurse.availabilities.where(is_booked: [false, nil]).where('start_time > ?', Time.current).order(start_time: :asc)
-  end
-
   def create
     @appointment = Appointment.new(appointment_params)
     @appointment.user = current_user
-    if @appointment.save
+
+    if book_appointment
       redirect_to confirmation_path(@appointment)
     else
-      @nurse = @appointment.nurse
-      @availabilities = @nurse.availabilities.where(is_booked: [false, nil]).where('start_time > ?', Time.current).order(start_time: :asc)
-      render :new, status: :unprocessable_entity
+      redirect_to nurse_path(appointment_params[:nurse_id]), alert: @appointment.errors.full_messages.to_sentence
     end
   end
 
@@ -23,7 +16,19 @@ class AppointmentsController < ApplicationController
 
   private
 
+  def book_appointment
+    ActiveRecord::Base.transaction do
+      availability = @appointment.availability&.lock!
+      if availability.nil? || availability.is_booked
+        @appointment.errors.add(:availability_id, "n'est plus disponible")
+        raise ActiveRecord::Rollback
+      end
+
+      @appointment.save && availability.update!(is_booked: true)
+    end
+  end
+
   def appointment_params
-    params.require(:appointment).permit(:nurse_id, :availability_id, :care_type, :address)
+    params.require(:appointment).permit(:nurse_id, :availability_id)
   end
 end
