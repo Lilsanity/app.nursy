@@ -8,7 +8,7 @@ class PagesController < ApplicationController
 
   def my_space
     @user = current_user
-    @appointments = @user.appointments.includes(:nurse).order(created_at: :desc)
+    @appointments = @user.appointments.includes(:nurse, :availability).order(created_at: :desc)
   end
 
   def confirmation

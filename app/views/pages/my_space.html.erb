@@ -73,6 +73,7 @@
             <div style="flex-grow: 1;">
               <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h6>
               <div class="d-flex gap-3" style="font-size: 0.75rem; color: #6c757d;">
+                <span>📅 <%= l(appointment.availability.start_time, format: "%d/%m/%Y") %></span>
                 <span>🕒 <%= appointment.availability.start_time.strftime("%Hh%M") %></span>
                 <span>🏠 À domicile</span>
               </div>
@@ -80,11 +81,73 @@
             <div class="text-end me-4">
               <div class="fw-bold" style="font-size: 1rem;"><%= number_to_currency(appointment.price, unit: "€", format: "%n %u") %></div>
             </div>
-            <div>
-               <button class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;">Annuler</button>
-            </div>
+            <% if appointment.upcoming? %>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
+                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
+              </div>
+            <% end %>
           </div>
         </div>
+
+        <% if appointment.upcoming? %>
+          <div class="modal fade" id="cancelModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content rounded-4 border-0 shadow-sm">
+                <div class="modal-body p-4 text-center">
+                  <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: #fce8e6;">
+                    <i class="fas fa-exclamation-triangle" style="color: #ea4335; font-size: 1.3rem;"></i>
+                  </div>
+                  <h5 class="fw-bold mb-2">Annuler ce rendez-vous ?</h5>
+                  <p class="text-muted mb-4">
+                    Avec <strong><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></strong><br>
+                    <%= l(appointment.availability.start_time, format: "%A %d %B à %Hh%M") %>
+                  </p>
+                  <%= form_with model: appointment, url: appointment_path(appointment), method: :delete, local: true do %>
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Retour</button>
+                      <button type="submit" class="btn w-50 fw-bold py-2 text-white" style="border-radius: 8px; background: #ea4335;">Annuler le RDV</button>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="rescheduleModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content rounded-4 border-0 shadow-sm">
+                <div class="modal-body p-4" data-controller="slot-picker">
+                  <h5 class="fw-bold mb-3 text-center">Choisir un nouveau créneau</h5>
+                  <p class="text-muted text-center mb-3" style="font-size: 0.85rem;">
+                    Avec <strong><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></strong>
+                  </p>
+                  <%= form_with model: appointment, url: appointment_path(appointment), method: :patch, local: true do |f| %>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                      <% appointment.reschedulable_slots.each do |slot| %>
+                        <% current = slot.id == appointment.availability_id %>
+                        <button type="button"
+                                class="btn fw-bold rounded-pill py-2 px-3"
+                                data-slot-picker-target="option"
+                                data-action="click->slot-picker#select"
+                                data-availability-id="<%= slot.id %>"
+                                data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>"
+                                style="<%= current ? 'border: 2px solid #00a896; color: #00a896; background: #e0f8f1;' : 'border: 2px solid #dee2e6; color: #495057; background: white;' %> font-size: 0.85rem;">
+                          <%= l(slot.start_time, format: "%d/%m %Hh%M") %>
+                        </button>
+                      <% end %>
+                    </div>
+                    <%= f.hidden_field :availability_id, value: appointment.availability_id, data: { slot_picker_target: "availabilityInput" } %>
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Retour</button>
+                      <%= f.submit "Confirmer", class: "btn w-50 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896;" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
       <% end %>
       <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn w-100 py-3 mt-1 fw-bold rounded-4", style: "background: #f1f8f7; color: #007c91; border: 1px dashed #007c91; font-size: 0.9rem;" %>
     </div>
