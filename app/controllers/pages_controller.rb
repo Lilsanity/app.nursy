@@ -12,7 +12,6 @@ class PagesController < ApplicationController
   end
 
   def confirmation
-    @appointment = Appointment.find(params[:id])
-    @user = current_user # Assicurati di avere il current_user disponibile
+    @appointment = Appointment.includes(:availability, nurse: :commune).find(params[:id])
   end
 end
