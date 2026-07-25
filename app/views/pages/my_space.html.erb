@@ -1,9 +1,18 @@
 <div style="background: linear-gradient(135deg, #00bfa5 0%, #007c91 100%); color: white; padding: 1.2rem 0;">
   <div class="container">
     <div class="d-flex align-items-center">
-      <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(255,255,255,0.2);">
-        <%= @user.first_name[0] %><%= @user.last_name[0] %>
-      </div>
+      <%= form_with url: my_space_photo_path, method: :patch, local: true do |f| %>
+        <label for="photo-upload" style="cursor: pointer;">
+          <% if @user.photo.attached? %>
+            <%= image_tag @user.photo, class: "rounded-circle me-3", style: "width: 45px; height: 45px; object-fit: cover;" %>
+          <% else %>
+            <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px; background: rgba(255,255,255,0.2);">
+              <%= @user.first_name[0] %><%= @user.last_name[0] %>
+            </div>
+          <% end %>
+        </label>
+        <%= f.file_field :photo, id: "photo-upload", style: "display: none;", onchange: "this.form.submit();" %>
+      <% end %>
       <div>
         <h2 class="mb-0 h6 fw-bold"><%= @user.first_name %> <%= @user.last_name %></h2>
         <small class="opacity-75" style="font-size: 0.8rem;">Patient</small>
