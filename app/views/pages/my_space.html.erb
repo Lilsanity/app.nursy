@@ -81,17 +81,14 @@
             <div class="text-end me-4">
               <div class="fw-bold" style="font-size: 1rem;"><%= number_to_currency(appointment.price, unit: "€", format: "%n %u") %></div>
             </div>
-            <% if appointment.upcoming? %>
-              <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
-                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
-              </div>
-            <% end %>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
+              <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
+            </div>
           </div>
         </div>
 
-        <% if appointment.upcoming? %>
-          <div class="modal fade" id="cancelModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="cancelModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content rounded-4 border-0 shadow-sm">
                 <div class="modal-body p-4 text-center">
@@ -147,7 +144,6 @@
               </div>
             </div>
           </div>
-        <% end %>
       <% end %>
       <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn w-100 py-3 mt-1 fw-bold rounded-4", style: "background: #f1f8f7; color: #007c91; border: 1px dashed #007c91; font-size: 0.9rem;" %>
     </div>
