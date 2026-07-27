@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :appointments, only: [:create, :show, :update, :destroy]
 
   get "my-space", to: "pages#my_space", as: :my_space
+  patch "my-space/photo", to: "pages#update_photo", as: :my_space_photo
 
   get "up" => "rails/health#show", as: :rails_health_check
 
