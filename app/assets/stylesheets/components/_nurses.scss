@@ -85,7 +85,7 @@
   border-radius: 16px;
   font-family: "Inter", sans-serif;
   padding: 12px 24px;
-  height: 80px;
+  min-height: 80px;
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 48px 220px 1fr 140px;
