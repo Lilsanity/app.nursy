@@ -17,6 +17,14 @@ puts "Création des spécialités..."
 specialties = ["Pédiatrie", "Gériatrie", "Soins Palliatifs", "Pansements complexes", "Vaccination"]
 specialty_objects = specialties.map { |name| Specialty.create!(name: name) }
 
+used_rpps_numbers = Set.new
+generate_rpps_number = lambda do
+  loop do
+    number = [rand(1..9), *Array.new(10) { rand(0..9) }].join
+    break number if used_rpps_numbers.add?(number)
+  end
+end
+
 puts "Création des utilisateurs..."
 users = [
   User.create!(first_name: "Jean",   last_name: "Dupont",  email: "jean@gmail.com",   password: "password", phone: "0612345678", commune: "Paris"),
@@ -39,11 +47,11 @@ review_comments = [
 
 puts "Création des infirmiers génériques..."
 nurses_data = [
-  { first_name: "Marc",    last_name: "Dubois",   email: "marc.dubois@nursy.fr",    rpps_number: "10000098765", commune: commune_paris },
-  { first_name: "Claire",  last_name: "Fontaine", email: "claire.fontaine@nursy.fr", rpps_number: "10001098765", commune: commune_lyon },
-  { first_name: "Antoine", last_name: "Simon",    email: "antoine.simon@nursy.fr",   rpps_number: "10002098765", commune: commune_marseille },
-  { first_name: "Léa",     last_name: "Rousseau", email: "lea.rousseau@nursy.fr",    rpps_number: "10003098765", commune: commune_lyon },
-  { first_name: "Hugo",    last_name: "Garnier",  email: "hugo.garnier@nursy.fr",    rpps_number: "10004098765", commune: commune_paris },
+  { first_name: "Marc",    last_name: "Dubois",   email: "marc.dubois@nursy.fr",    rpps_number: generate_rpps_number.call, commune: commune_paris },
+  { first_name: "Claire",  last_name: "Fontaine", email: "claire.fontaine@nursy.fr", rpps_number: generate_rpps_number.call, commune: commune_lyon },
+  { first_name: "Antoine", last_name: "Simon",    email: "antoine.simon@nursy.fr",   rpps_number: generate_rpps_number.call, commune: commune_marseille },
+  { first_name: "Léa",     last_name: "Rousseau", email: "lea.rousseau@nursy.fr",    rpps_number: generate_rpps_number.call, commune: commune_lyon },
+  { first_name: "Hugo",    last_name: "Garnier",  email: "hugo.garnier@nursy.fr",    rpps_number: generate_rpps_number.call, commune: commune_paris },
 ]
 
 nurses_data.each do |attrs|
@@ -92,9 +100,9 @@ end
 
 puts "Création des infirmiers à Paris..."
 paris_nurses = [
-  { first_name: "Camille", last_name: "Moreau",  rpps_number: "10010001111" },
-  { first_name: "Julien",  last_name: "Bernard",  rpps_number: "10010002222" },
-  { first_name: "Sophie",  last_name: "Lefèvre", rpps_number: "10010003333" },
+  { first_name: "Camille", last_name: "Moreau",  rpps_number: generate_rpps_number.call },
+  { first_name: "Julien",  last_name: "Bernard",  rpps_number: generate_rpps_number.call },
+  { first_name: "Sophie",  last_name: "Lefèvre", rpps_number: generate_rpps_number.call },
 ]
 
 paris_nurses.each do |attrs|
