@@ -34,16 +34,28 @@ users = [
   User.create!(first_name: "Lucas",  last_name: "Petit",   email: "lucas@gmail.com",  password: "password", phone: "0656789012", commune: "Lyon"),
 ]
 
-review_comments = [
-  "Très professionnel(le), ponctuel(le) et doux(douce). Je recommande vivement.",
-  "Excellente prise en charge pour ma mère. Rassurant(e) et compétent(e).",
-  "Réactivité exemplaire, disponible rapidement pour une urgence.",
-  "Soins de grande qualité, très attentionné(e) et à l'écoute.",
-  "Je suis très satisfait(e). Les soins ont été effectués avec soin et professionnalisme.",
-  "Toujours disponible et très aimable. Je recommande sans hésitation.",
-  "Une vraie professionnelle, douce et efficace. Merci !",
-  "Ponctuel(le) et très sérieux(se). Mes parents sont en de bonnes mains.",
-]
+def review_comment_for(nurse)
+  professionnel = nurse.female? ? "professionnelle" : "professionnel"
+  ponctuel      = nurse.female? ? "ponctuelle" : "ponctuel"
+  doux          = nurse.female? ? "douce" : "doux"
+  rassurant     = nurse.female? ? "Rassurante" : "Rassurant"
+  competent     = nurse.female? ? "compétente" : "compétent"
+  attentionne   = nurse.female? ? "attentionnée" : "attentionné"
+  satisfait     = nurse.female? ? "satisfaite" : "satisfait"
+  serieux       = nurse.female? ? "sérieuse" : "sérieux"
+  un_e_vrai_e   = nurse.female? ? "Une vraie" : "Un vrai"
+
+  [
+    "Très #{professionnel}, #{ponctuel} et #{doux}. Je recommande vivement.",
+    "Excellente prise en charge pour ma mère. #{rassurant} et #{competent}.",
+    "Réactivité exemplaire, disponible rapidement pour une urgence.",
+    "Soins de grande qualité, très #{attentionne} et à l'écoute.",
+    "Je suis très #{satisfait}. Les soins ont été effectués avec soin et professionnalisme.",
+    "Toujours disponible et très aimable. Je recommande sans hésitation.",
+    "#{un_e_vrai_e} #{professionnel}, #{doux} et efficace. Merci !",
+    "#{ponctuel.capitalize} et très #{serieux}. Mes parents sont en de bonnes mains.",
+  ].sample
+end
 
 puts "Création des infirmiers génériques..."
 nurses_data = [
@@ -93,7 +105,7 @@ nurses_data.each do |attrs|
       user:        user,
       appointment: appointment,
       rating:      rand(4..5),
-      comment:     review_comments.sample
+      comment:     review_comment_for(nurse)
     )
   end
 end
@@ -144,7 +156,7 @@ paris_nurses.each do |attrs|
       user:        user,
       appointment: appointment,
       rating:      rand(4..5),
-      comment:     review_comments.sample
+      comment:     review_comment_for(nurse)
     )
   end
 end
