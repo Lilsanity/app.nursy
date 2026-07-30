@@ -90,17 +90,14 @@
             <div class="text-end me-4">
               <div class="fw-bold" style="font-size: 1rem;"><%= number_to_currency(appointment.price, unit: "€", format: "%n %u") %></div>
             </div>
-            <% if appointment.upcoming? %>
-              <div class="d-flex gap-2">
-                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
-                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
-              </div>
-            <% end %>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
+              <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
+            </div>
           </div>
         </div>
 
-        <% if appointment.upcoming? %>
-          <div class="modal fade" id="cancelModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="cancelModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content rounded-4 border-0 shadow-sm">
                 <div class="modal-body p-4 text-center">
@@ -156,9 +153,54 @@
               </div>
             </div>
           </div>
-        <% end %>
       <% end %>
       <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn w-100 py-3 mt-1 fw-bold rounded-4", style: "background: #f1f8f7; color: #007c91; border: 1px dashed #007c91; font-size: 0.9rem;" %>
+
+      <% if @reviewable_appointments.any? %>
+        <h6 class="text-uppercase text-muted mb-3 mt-4" style="font-size: 0.8rem;">Rendez-vous terminés</h6>
+        <% @reviewable_appointments.each do |appointment| %>
+          <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="p-3 d-flex align-items-center">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px; background: #6c757d; font-size: 0.9rem;">
+                <%= appointment.nurse.first_name[0] %><%= appointment.nurse.last_name[0] %>
+              </div>
+              <div style="flex-grow: 1;">
+                <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h6>
+                <div class="d-flex gap-3" style="font-size: 0.75rem; color: #6c757d;">
+                  <span>📅 <%= l(appointment.availability.start_time, format: "%d/%m/%Y") %></span>
+                  <span>🕒 <%= appointment.availability.start_time.strftime("%Hh%M") %></span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-sm fw-bold rounded-pill px-3 py-1 text-white" style="font-size: 0.75rem; background: #00a896;" data-bs-toggle="modal" data-bs-target="#reviewModal-<%= appointment.id %>">Laisser un avis</button>
+            </div>
+          </div>
+
+          <div class="modal fade" id="reviewModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content rounded-4 border-0 shadow-sm">
+                <div class="modal-body p-4">
+                  <h5 class="fw-bold mb-3 text-center">Votre avis sur <%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h5>
+                  <%= form_with model: Review.new, url: reviews_path, local: true do |f| %>
+                    <%= f.hidden_field :appointment_id, value: appointment.id %>
+                    <div class="mb-3">
+                      <%= f.label :rating, "Note", class: "form-label fw-bold" %>
+                      <%= f.select :rating, (1..5).to_a.reverse.map { |n| ["#{n} étoile#{'s' if n > 1}", n] }, { prompt: "Choisissez une note" }, class: "form-select" %>
+                    </div>
+                    <div class="mb-3">
+                      <%= f.label :comment, "Commentaire", class: "form-label fw-bold" %>
+                      <%= f.text_area :comment, class: "form-control", rows: 3 %>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Annuler</button>
+                      <%= f.submit "Envoyer", class: "btn w-50 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896;" %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
     </div>
   </div>
 </div>

@@ -1,4 +1,6 @@
 class NursesController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     joined_commune = false
 

@@ -17,6 +17,14 @@ puts "Création des spécialités..."
 specialties = ["Pédiatrie", "Gériatrie", "Soins Palliatifs", "Pansements complexes", "Vaccination"]
 specialty_objects = specialties.map { |name| Specialty.create!(name: name) }
 
+used_rpps_numbers = Set.new
+generate_rpps_number = lambda do
+  loop do
+    number = [rand(1..9), *Array.new(10) { rand(0..9) }].join
+    break number if used_rpps_numbers.add?(number)
+  end
+end
+
 puts "Création des utilisateurs..."
 users = [
   User.create!(first_name: "Jean",   last_name: "Dupont",  email: "jean@gmail.com",   password: "password", phone: "0612345678", commune: "Paris"),
@@ -26,24 +34,36 @@ users = [
   User.create!(first_name: "Lucas",  last_name: "Petit",   email: "lucas@gmail.com",  password: "password", phone: "0656789012", commune: "Lyon"),
 ]
 
-review_comments = [
-  "Très professionnel(le), ponctuel(le) et doux(douce). Je recommande vivement.",
-  "Excellente prise en charge pour ma mère. Rassurant(e) et compétent(e).",
-  "Réactivité exemplaire, disponible rapidement pour une urgence.",
-  "Soins de grande qualité, très attentionné(e) et à l'écoute.",
-  "Je suis très satisfait(e). Les soins ont été effectués avec soin et professionnalisme.",
-  "Toujours disponible et très aimable. Je recommande sans hésitation.",
-  "Une vraie professionnelle, douce et efficace. Merci !",
-  "Ponctuel(le) et très sérieux(se). Mes parents sont en de bonnes mains.",
-]
+def review_comment_for(nurse)
+  professionnel = nurse.female? ? "professionnelle" : "professionnel"
+  ponctuel      = nurse.female? ? "ponctuelle" : "ponctuel"
+  doux          = nurse.female? ? "douce" : "doux"
+  rassurant     = nurse.female? ? "Rassurante" : "Rassurant"
+  competent     = nurse.female? ? "compétente" : "compétent"
+  attentionne   = nurse.female? ? "attentionnée" : "attentionné"
+  satisfait     = nurse.female? ? "satisfaite" : "satisfait"
+  serieux       = nurse.female? ? "sérieuse" : "sérieux"
+  un_e_vrai_e   = nurse.female? ? "Une vraie" : "Un vrai"
+
+  [
+    "Très #{professionnel}, #{ponctuel} et #{doux}. Je recommande vivement.",
+    "Excellente prise en charge pour ma mère. #{rassurant} et #{competent}.",
+    "Réactivité exemplaire, disponible rapidement pour une urgence.",
+    "Soins de grande qualité, très #{attentionne} et à l'écoute.",
+    "Je suis très #{satisfait}. Les soins ont été effectués avec soin et professionnalisme.",
+    "Toujours disponible et très aimable. Je recommande sans hésitation.",
+    "#{un_e_vrai_e} #{professionnel}, #{doux} et efficace. Merci !",
+    "#{ponctuel.capitalize} et très #{serieux}. Mes parents sont en de bonnes mains.",
+  ].sample
+end
 
 puts "Création des infirmiers génériques..."
 nurses_data = [
-  { first_name: "Marc",    last_name: "Dubois",   email: "marc.dubois@nursy.fr",    rpps_number: "10000098765", commune: commune_paris },
-  { first_name: "Claire",  last_name: "Fontaine", email: "claire.fontaine@nursy.fr", rpps_number: "10001098765", commune: commune_lyon },
-  { first_name: "Antoine", last_name: "Simon",    email: "antoine.simon@nursy.fr",   rpps_number: "10002098765", commune: commune_marseille },
-  { first_name: "Léa",     last_name: "Rousseau", email: "lea.rousseau@nursy.fr",    rpps_number: "10003098765", commune: commune_lyon },
-  { first_name: "Hugo",    last_name: "Garnier",  email: "hugo.garnier@nursy.fr",    rpps_number: "10004098765", commune: commune_paris },
+  { first_name: "Marc",    last_name: "Dubois",   email: "marc.dubois@nursy.fr",    rpps_number: generate_rpps_number.call, commune: commune_paris },
+  { first_name: "Claire",  last_name: "Fontaine", email: "claire.fontaine@nursy.fr", rpps_number: generate_rpps_number.call, commune: commune_lyon },
+  { first_name: "Antoine", last_name: "Simon",    email: "antoine.simon@nursy.fr",   rpps_number: generate_rpps_number.call, commune: commune_marseille },
+  { first_name: "Léa",     last_name: "Rousseau", email: "lea.rousseau@nursy.fr",    rpps_number: generate_rpps_number.call, commune: commune_lyon },
+  { first_name: "Hugo",    last_name: "Garnier",  email: "hugo.garnier@nursy.fr",    rpps_number: generate_rpps_number.call, commune: commune_paris },
 ]
 
 nurses_data.each do |attrs|
@@ -85,16 +105,16 @@ nurses_data.each do |attrs|
       user:        user,
       appointment: appointment,
       rating:      rand(4..5),
-      comment:     review_comments.sample
+      comment:     review_comment_for(nurse)
     )
   end
 end
 
 puts "Création des infirmiers à Paris..."
 paris_nurses = [
-  { first_name: "Camille", last_name: "Moreau",  rpps_number: "10010001111" },
-  { first_name: "Julien",  last_name: "Bernard",  rpps_number: "10010002222" },
-  { first_name: "Sophie",  last_name: "Lefèvre", rpps_number: "10010003333" },
+  { first_name: "Camille", last_name: "Moreau",  rpps_number: generate_rpps_number.call },
+  { first_name: "Julien",  last_name: "Bernard",  rpps_number: generate_rpps_number.call },
+  { first_name: "Sophie",  last_name: "Lefèvre", rpps_number: generate_rpps_number.call },
 ]
 
 paris_nurses.each do |attrs|
@@ -136,7 +156,7 @@ paris_nurses.each do |attrs|
       user:        user,
       appointment: appointment,
       rating:      rand(4..5),
-      comment:     review_comments.sample
+      comment:     review_comment_for(nurse)
     )
   end
 end

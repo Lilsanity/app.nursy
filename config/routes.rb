@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :nurses, only: [:index, :show]
 
   resources :appointments, only: [:create, :show, :update, :destroy]
+  resources :reviews, only: [:create]
 
   get "my-space", to: "pages#my_space", as: :my_space
   patch "my-space/photo", to: "pages#update_photo", as: :my_space_photo
