@@ -68,7 +68,7 @@
   rating = (@nurse.average_rating || 5.0).to_f
 %>
 
-<div class="container mt-4" style="max-width: 1200px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<div class="container mt-4" style="max-width: 1200px;">
   <nav aria-label="breadcrumb" class="mb-4" style="background-color: #F9FAFB; border-radius: 8px; padding: 10px 16px;">
     <ol class="breadcrumb bg-transparent p-0 small mb-0" style="font-size: 0.85rem;">
       <li class="breadcrumb-item"><%= link_to "Accueil", root_path, class: "text-decoration-none", style: "color: #00a896;" %></li>
@@ -126,19 +126,19 @@
       <div class="fs-3 mb-2">👥</div>
       <h5 class="mb-0 fw-bold" style="color: #00a896; font-size: 1.3rem;"><%= patients_count %></h5>
       <small style="color: #adb5bd; font-size: 0.8rem;">Patients</small>
-      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #f1f3f4;"></div>
+      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #D1D5DB;"></div>
     </div>
     <div class="col position-relative">
       <div class="fs-3 mb-2">😁</div>
       <h5 class="mb-0 fw-bold" style="color: #6f42c1; font-size: 1.3rem;"><%= satisfaction_rate %>%</h5>
       <small style="color: #adb5bd; font-size: 0.8rem;">Satisfaction</small>
-      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #f1f3f4;"></div>
+      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #D1D5DB;"></div>
     </div>
     <div class="col position-relative">
       <div class="fs-3 mb-2">⚡</div>
       <h5 class="mb-0 fw-bold" style="color: #ff9800; font-size: 1.3rem;"><%= response_time_short %></h5>
       <small style="color: #adb5bd; font-size: 0.8rem;">Réponse moy.</small>
-      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #f1f3f4;"></div>
+      <div class="position-absolute top-50 end-0 translate-middle-y" style="width: 1px; height: 50px; background-color: #D1D5DB;"></div>
     </div>
     <div class="col">
       <div class="fs-3 mb-2">📅</div>
@@ -162,7 +162,7 @@
               <span class="badge rounded-pill fw-medium px-3 py-2 border-0" style="background-color: #e0f7fa; color: #00a896; font-size: 0.85rem;">Soins généraux</span>
             <% end %>
           </div>
-          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <hr style="border-color: #D1D5DB; margin: 0 0 16px;">
           <div class="d-flex flex-wrap gap-2">
             <% nearby_zones.each do |zone| %>
               <span class="badge rounded-pill fw-medium px-3 py-2" style="background-color: #ffffff; color: #495057; border: 1px solid #dee2e6; font-size: 0.85rem;"><%= zone %></span>
@@ -183,7 +183,7 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= availability_text %> • 8h - 19h</span>
             </div>
           </div>
-          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <hr style="border-color: #D1D5DB; margin: 0 0 16px;">
           <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #f0faff;">
               <i class="fas fa-euro-sign" style="color: #00b4d8; font-size: 1rem;"></i>
@@ -193,7 +193,7 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= tariff_text %></span>
             </div>
           </div>
-          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <hr style="border-color: #D1D5DB; margin: 0 0 16px;">
           <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #f8f5ff;">
               <i class="fas fa-comment-dots" style="color: #6f42c1; font-size: 1rem;"></i>
@@ -203,7 +203,7 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= lang_text %></span>
             </div>
           </div>
-          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <hr style="border-color: #D1D5DB; margin: 0 0 16px;">
           <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #fff6f0;">
               <i class="fas fa-car" style="color: #ff9800; font-size: 1rem;"></i>
@@ -213,7 +213,7 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= mobility_text %></span>
             </div>
           </div>
-          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <hr style="border-color: #D1D5DB; margin: 0 0 16px;">
           <div class="d-flex">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #fdf0ef;">
               <i class="fas fa-shield-alt" style="color: #ea4335; font-size: 1rem;"></i>
