@@ -20,9 +20,7 @@
     { border: "#ea4335", bg: "#fdf0ef" }
   ]
 
-  # Liste de prénoms masculins pour déterminer le genre correctement
-  male_first_names = %w[Antoine Julien Marc Hugo Thomas Lucas Jean Pierre Paul Nicolas David Mathieu Romain Baptiste Kevin Alexandre]
-  is_female = !male_first_names.include?(@nurse.first_name)
+  is_female = @nurse.female?
 
   job_title = is_female ? "Infirmière libérale diplômée d'État" : "Infirmier libéral diplômé d'État"
   gender_text = is_female ? "Infirmière" : "Infirmier"
