@@ -58,7 +58,6 @@
   schools = ["l'IFSI Paris", "la Croix-Rouge", "l'AP-HP", "l'IFSI régional"]
   school_text = schools[@nurse.id % 4]
 
-  # Zones réalistes basées sur la commune réelle
   nearby_communes = {
     "Paris"     => ["Paris 75001", "Paris 75002", "Paris 75003"],
     "Lyon"      => ["Lyon 1er", "Lyon 2e", "Lyon 3e"],
@@ -66,13 +65,12 @@
   }
   nearby_zones = nearby_communes[@nurse.commune.name] || [@nurse.commune.name]
 
-  # Rating pour les étoiles
   rating = (@nurse.average_rating || 5.0).to_f
 %>
 
 <div class="container mt-4" style="max-width: 1200px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-  <nav aria-label="breadcrumb" class="mb-4">
-    <ol class="breadcrumb bg-transparent p-0 small" style="font-size: 0.85rem;">
+  <nav aria-label="breadcrumb" class="mb-4" style="background-color: #F9FAFB; border-radius: 8px; padding: 10px 16px;">
+    <ol class="breadcrumb bg-transparent p-0 small mb-0" style="font-size: 0.85rem;">
       <li class="breadcrumb-item"><%= link_to "Accueil", root_path, class: "text-decoration-none", style: "color: #00a896;" %></li>
       <li class="breadcrumb-item"><%= link_to "Recherche", nurses_path(commune: @nurse.commune.name), class: "text-decoration-none", style: "color: #00a896;" %></li>
       <li class="breadcrumb-item" style="color: #6c757d;"><%= @nurse.commune.name %> <%= @nurse.commune.postal_code %></li>
@@ -123,7 +121,7 @@
     </div>
   </div>
 
-  <div class="row text-center py-4 mb-5 mx-0" style="background-color: #ffffff; border-radius: 12px; border: 1px solid #f1f3f4; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+  <div class="row text-center py-4 mb-5 mx-0" style="background-color: #F9FAFB; border-radius: 12px; border: 1px solid #f1f3f4; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
     <div class="col position-relative">
       <div class="fs-3 mb-2">👥</div>
       <h5 class="mb-0 fw-bold" style="color: #00a896; font-size: 1.3rem;"><%= patients_count %></h5>
@@ -164,6 +162,7 @@
               <span class="badge rounded-pill fw-medium px-3 py-2 border-0" style="background-color: #e0f7fa; color: #00a896; font-size: 0.85rem;">Soins généraux</span>
             <% end %>
           </div>
+          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
           <div class="d-flex flex-wrap gap-2">
             <% nearby_zones.each do |zone| %>
               <span class="badge rounded-pill fw-medium px-3 py-2" style="background-color: #ffffff; color: #495057; border: 1px solid #dee2e6; font-size: 0.85rem;"><%= zone %></span>
@@ -175,7 +174,7 @@
       <div class="card" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); background-color: #ffffff;">
         <div class="card-body p-4">
           <h6 class="text-uppercase fw-bold mb-4" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #212529;">Infos Pratiques</h6>
-          <div class="d-flex mb-4">
+          <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #e0f8f1;">
               <i class="far fa-clock" style="color: #00a896; font-size: 1rem;"></i>
             </div>
@@ -184,7 +183,8 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= availability_text %> • 8h - 19h</span>
             </div>
           </div>
-          <div class="d-flex mb-4">
+          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #f0faff;">
               <i class="fas fa-euro-sign" style="color: #00b4d8; font-size: 1rem;"></i>
             </div>
@@ -193,7 +193,8 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= tariff_text %></span>
             </div>
           </div>
-          <div class="d-flex mb-4">
+          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #f8f5ff;">
               <i class="fas fa-comment-dots" style="color: #6f42c1; font-size: 1rem;"></i>
             </div>
@@ -202,7 +203,8 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= lang_text %></span>
             </div>
           </div>
-          <div class="d-flex mb-4">
+          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
+          <div class="d-flex mb-3">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #fff6f0;">
               <i class="fas fa-car" style="color: #ff9800; font-size: 1rem;"></i>
             </div>
@@ -211,6 +213,7 @@
               <span class="fw-bold text-dark" style="font-size: 0.9rem;"><%= mobility_text %></span>
             </div>
           </div>
+          <hr style="border-color: #9CA3AF; margin: 0 0 16px;">
           <div class="d-flex">
             <div class="me-3 text-center rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background-color: #fdf0ef;">
               <i class="fas fa-shield-alt" style="color: #ea4335; font-size: 1rem;"></i>
@@ -225,20 +228,11 @@
     </div>
 
     <div class="col-lg-4 mb-4">
-      <div class="card border-0 mb-4" style="background-color: #00a896; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,168,150,0.2);">
-        <div class="card-body p-4 position-relative overflow-hidden">
-          <p class="mb-1 text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 1px; color: rgba(255,255,255,0.8);">Numéro RPPS</p>
-          <h4 class="mb-3 fw-bold text-white" style="letter-spacing: 2px; font-size: 1.5rem;"><%= @nurse.rpps_number %></h4>
-          <div class="pt-3 d-flex align-items-center" style="border-top: 1px solid rgba(255,255,255,0.3);">
-            <span class="d-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 16px; height: 16px; color: #00a896; font-size: 9px;"><i class="fas fa-check"></i></span>
-            <small style="color: white; font-size: 0.8rem; font-weight: 500;">Vérifié — Annuaire Santé</small>
-          </div>
-          <i class="fas fa-check position-absolute" style="right: -10px; top: 10px; font-size: 5rem; color: rgba(255,255,255,0.1);"></i>
-        </div>
-      </div>
-
-      <div class="card overflow-hidden" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-        <div class="p-3 text-center" style="background-color: #00a896;">
+      <div class="card overflow-hidden mb-5" style="border: 1px solid #f1f3f4; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <div class="p-3 text-center" style="background: linear-gradient(135deg, #0BBFAA, #0891B2);">
+          <span class="fw-bold text-white d-flex justify-content-center align-items-center" style="font-size: 0.95rem;">
+            <span class="me-2" style="font-size: 10px;">●</span> Disponible aujourd'hui
+          </span>
           <small style="color: rgba(255,255,255,0.9); font-size: 0.8rem;">Répond en <%= response_time %></small>
         </div>
         <div class="card-body p-4 bg-white" data-controller="slot-picker">
@@ -311,6 +305,18 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="card border-0" style="background: linear-gradient(135deg, #0BBFAA, #0891B2); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,168,150,0.2);">
+        <div class="card-body p-3 position-relative overflow-hidden">
+          <p class="mb-1 text-uppercase fw-bold" style="font-size: 0.6rem; letter-spacing: 1px; color: rgba(255,255,255,0.8);">Numéro RPPS</p>
+          <h6 class="mb-2 fw-bold text-white" style="letter-spacing: 1px; font-size: 1rem;"><%= @nurse.rpps_number %></h6>
+          <div class="pt-2 d-flex align-items-center" style="border-top: 1px solid rgba(255,255,255,0.3);">
+            <span class="d-flex align-items-center justify-content-center bg-white rounded-circle me-2" style="width: 14px; height: 14px; color: #00a896; font-size: 8px;"><i class="fas fa-check"></i></span>
+            <small style="color: white; font-size: 0.7rem; font-weight: 500;">Vérifié — Annuaire Santé</small>
+          </div>
+          <i class="fas fa-check position-absolute" style="right: -10px; top: 10px; font-size: 3.5rem; color: rgba(255,255,255,0.1);"></i>
         </div>
       </div>
     </div>
