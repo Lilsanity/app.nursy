@@ -91,8 +91,8 @@
               <div class="fw-bold" style="font-size: 1rem;"><%= number_to_currency(appointment.price, unit: "€", format: "%n %u") %></div>
             </div>
             <div class="d-flex gap-2">
-              <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
-              <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1" style="font-size: 0.75rem;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
+              <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
+              <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
             </div>
           </div>
         </div>
@@ -111,8 +111,8 @@
                   </p>
                   <%= form_with model: appointment, url: appointment_path(appointment), method: :delete, local: true do %>
                     <div class="d-flex gap-2">
-                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Retour</button>
-                      <button type="submit" class="btn w-50 fw-bold py-2 text-white" style="border-radius: 8px; background: #ea4335;">Annuler le RDV</button>
+                      <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Retour</button>
+                      <button type="submit" class="btn btn-nursy-primary w-50">Annuler le RDV</button>
                     </div>
                   <% end %>
                 </div>
@@ -133,20 +133,20 @@
                       <% appointment.reschedulable_slots.each do |slot| %>
                         <% current = slot.id == appointment.availability_id %>
                         <button type="button"
-                                class="btn fw-bold rounded-pill py-2 px-3"
+                                class="btn btn-nursy-pill px-3"
                                 data-slot-picker-target="option"
                                 data-action="click->slot-picker#select"
                                 data-availability-id="<%= slot.id %>"
                                 data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>"
-                                style="<%= current ? 'border: 2px solid #00a896; color: #00a896; background: #e0f8f1;' : 'border: 2px solid #dee2e6; color: #495057; background: white;' %> font-size: 0.85rem;">
+                                style="<%= 'border-color: #00a896; color: #00a896; background: #e0f8f1;' if current %>">
                           <%= l(slot.start_time, format: "%d/%m %Hh%M") %>
                         </button>
                       <% end %>
                     </div>
                     <%= f.hidden_field :availability_id, value: appointment.availability_id, data: { slot_picker_target: "availabilityInput" } %>
                     <div class="d-flex gap-2">
-                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Retour</button>
-                      <%= f.submit "Confirmer", class: "btn w-50 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896;" %>
+                      <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Retour</button>
+                      <%= f.submit "Confirmer", class: "btn btn-nursy-primary w-50" %>
                     </div>
                   <% end %>
                 </div>
@@ -154,7 +154,7 @@
             </div>
           </div>
       <% end %>
-      <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn w-100 py-3 mt-1 fw-bold rounded-4", style: "background: #f1f8f7; color: #007c91; border: 1px dashed #007c91; font-size: 0.9rem;" %>
+      <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn btn-nursy-primary w-100 mt-1" %>
 
       <% if @reviewable_appointments.any? %>
         <h6 class="text-uppercase text-muted mb-3 mt-4" style="font-size: 0.8rem;">Rendez-vous terminés</h6>
@@ -171,7 +171,7 @@
                   <span>🕒 <%= appointment.availability.start_time.strftime("%Hh%M") %></span>
                 </div>
               </div>
-              <button type="button" class="btn btn-sm fw-bold rounded-pill px-3 py-1 text-white" style="font-size: 0.75rem; background: #00a896;" data-bs-toggle="modal" data-bs-target="#reviewModal-<%= appointment.id %>">Laisser un avis</button>
+              <button type="button" class="btn btn-nursy-primary btn-sm" data-bs-toggle="modal" data-bs-target="#reviewModal-<%= appointment.id %>">Laisser un avis</button>
             </div>
           </div>
 
@@ -191,8 +191,8 @@
                       <%= f.text_area :comment, class: "form-control", rows: 3 %>
                     </div>
                     <div class="d-flex gap-2">
-                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Annuler</button>
-                      <%= f.submit "Envoyer", class: "btn w-50 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896;" %>
+                      <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Annuler</button>
+                      <%= f.submit "Envoyer", class: "btn btn-nursy-primary w-50" %>
                     </div>
                   <% end %>
                 </div>

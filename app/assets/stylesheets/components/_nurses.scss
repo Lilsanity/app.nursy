@@ -1,3 +1,34 @@
+// Les deux seuls styles de bouton de l'app : primaire (dégradé vert) et pilule (secondaire/sélection)
+.btn-nursy-primary {
+  background: linear-gradient(135deg, #1fd1ac, #00a896);
+  color: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+}
+
+.btn-nursy-primary:hover,
+.btn-nursy-primary:focus {
+  color: #ffffff;
+  filter: brightness(1.05);
+}
+
+.btn-nursy-pill {
+  background: #ffffff;
+  color: #495057;
+  border: 2px solid #dee2e6;
+  border-radius: 999px;
+  font-weight: 700;
+  padding: 0.5rem 1.25rem;
+}
+
+.btn-nursy-pill:hover,
+.btn-nursy-pill:focus {
+  border-color: #00a896;
+  color: #00a896;
+}
+
 .nurses-banner {
   background: linear-gradient(90deg, #0BBFAA, #0891B2);
   padding: 16px 24px;
@@ -99,14 +130,6 @@
 .card-orange { border: 3px solid #F59E0B; border-left: 6px solid #F59E0B; }
 .card-green  { border: 3px solid #10B981; border-left: 6px solid #10B981; }
 
-.nurse-card .btn-primary {
-  background: linear-gradient(90deg, #0BBFAA, #0891B2);
-  border: none;
-  border-radius: 20px;
-  font-weight: 600;
-  padding: 8px 20px;
-  color: white;
-}
 
 .nurse-avatar {
   width: 48px;
