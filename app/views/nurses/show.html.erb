@@ -259,33 +259,31 @@
                                   end
                   %>
                   <button type="button"
-                          class="btn w-100 fw-bold rounded-pill py-2"
+                          class="btn btn-nursy-pill w-100"
                           data-slot-picker-target="option"
                           data-action="click->slot-picker#select"
                           data-availability-id="<%= slot.id %>"
-                          data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>"
-                          style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">
+                          data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>">
                     <%= day_label %> <%= slot.start_time.strftime("%Hh%M") %>
                   </button>
                 </div>
               <% end %>
             <% else %>
-              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #00a896; color: #00a896; background: #e0f8f1; font-size: 0.85rem;">Auj. 9h00</button></div>
-              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #00a896; color: #00a896; background: #e0f8f1; font-size: 0.85rem;">Auj. 14h00</button></div>
-              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">Dem. 10h00</button></div>
-              <div class="col-6"><button class="btn w-100 fw-bold rounded-pill py-2" style="border: 2px solid #dee2e6; color: #495057; background: white; font-size: 0.85rem;">Dem. 15h00</button></div>
+              <div class="col-6"><button class="btn btn-nursy-pill w-100">Auj. 9h00</button></div>
+              <div class="col-6"><button class="btn btn-nursy-pill w-100">Auj. 14h00</button></div>
+              <div class="col-6"><button class="btn btn-nursy-pill w-100">Dem. 10h00</button></div>
+              <div class="col-6"><button class="btn btn-nursy-pill w-100">Dem. 15h00</button></div>
             <% end %>
           </div>
           <button type="button"
-                  class="btn w-100 mb-2 fw-bold py-2 text-white"
+                  class="btn btn-nursy-primary w-100 mb-2"
                   data-slot-picker-target="submit"
                   data-bs-toggle="modal"
                   data-bs-target="#confirmAppointmentModal"
-                  disabled
-                  style="border-radius: 8px; background: #00a896; font-size: 0.95rem;">
+                  disabled>
             Demander un rendez-vous
           </button>
-          <button class="btn w-100 fw-bold py-2 text-dark" style="border: 1px solid #dee2e6; border-radius: 8px; background: white; font-size: 0.95rem;">Envoyer un message</button>
+          <button class="btn btn-nursy-pill w-100">Envoyer un message</button>
 
           <div class="modal fade" id="confirmAppointmentModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -303,8 +301,8 @@
                     <%= f.hidden_field :nurse_id, value: @nurse.id %>
                     <%= f.hidden_field :availability_id, data: { slot_picker_target: "availabilityInput" } %>
                     <div class="d-flex gap-2">
-                      <button type="button" class="btn w-50 fw-bold py-2" data-bs-dismiss="modal" style="border: 1px solid #dee2e6; border-radius: 8px;">Annuler</button>
-                      <%= f.submit "Confirmer", class: "btn w-50 fw-bold py-2 text-white", style: "border-radius: 8px; background: #00a896;" %>
+                      <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Annuler</button>
+                      <%= f.submit "Confirmer", class: "btn btn-nursy-primary w-50" %>
                     </div>
                   <% end %>
                 </div>

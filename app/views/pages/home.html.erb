@@ -6,7 +6,7 @@
     <%= form_with url: root_path, method: :get, local: true, class: "search-bar" do |f| %>
       <span class="search-icon">📍</span>
       <%= f.text_field :commune, value: params[:commune], placeholder: "Entrez votre commune...", class: "search-input" %>
-      <%= f.submit "Rechercher", class: "search-btn" %>
+      <%= f.submit "Rechercher", class: "btn btn-nursy-primary search-btn" %>
     <% end %>
 
     <div class="stats">
