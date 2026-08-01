@@ -144,3 +144,15 @@ $dark-teal: #0f5c56;
     text-decoration: underline;
   }
 }
+
+.home-results {
+  .card-teal, .card-purple, .card-pink, .card-orange, .card-green,
+  .card-blue, .card-indigo, .card-cyan, .card-amber, .card-red {
+    border-width: 2px;
+    border-left-width: 2px;
+  }
+}
+
+.search-icon {
+  color: #0BBFAA;
+}

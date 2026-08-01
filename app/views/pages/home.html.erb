@@ -4,7 +4,7 @@
     <p class="hero-subtitle">Des soins à domicile, partout en France</p>
 
     <%= form_with url: root_path, method: :get, local: true, class: "search-bar" do |f| %>
-      <span class="search-icon">📍</span>
+      <span class="search-icon"><i class="fas fa-map-marker-alt"></i></span>
       <%= f.text_field :commune, value: params[:commune], placeholder: "Entrez votre commune...", class: "search-input" %>
       <%= f.submit "Rechercher", class: "btn btn-nursy-primary search-btn" %>
     <% end %>
@@ -32,9 +32,25 @@
         <%= link_to "Voir tous les résultats →", nurses_path(commune: params[:commune]), class: "see-all-link" %>
       </div>
       <div class="results-grid">
-        <% colors = ["teal", "purple", "orange", "green"] %>
-        <% @nurses.each_with_index do |nurse, index| %>
-          <% color = colors[index % colors.length] %>
+        <%
+          specialty_card_colors = {
+            "Pansements complexes" => "teal",
+            "Vaccination"          => "green",
+            "Soins Palliatifs"     => "pink",
+            "Pédiatrie"            => "purple",
+            "Gériatrie"            => "orange",
+            "Injections"           => "indigo",
+            "Perfusions"           => "cyan",
+            "Suivi diabétique"     => "amber",
+            "Soins post-op."       => "blue",
+            "Personnes âgées"      => "red"
+          }
+          priority_order = specialty_card_colors.keys
+        %>
+        <% @nurses.each do |nurse| %>
+          <% nurse_specialty_names = nurse.specialties.map(&:name) %>
+          <% main_specialty = priority_order.find { |s| nurse_specialty_names.include?(s) } %>
+          <% color = specialty_card_colors[main_specialty] || "teal" %>
           <%= render "nurses/nurse_card", nurse: nurse, color: color %>
         <% end %>
       </div>
