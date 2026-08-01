@@ -182,16 +182,33 @@
           </p>
         </div>
       <% else %>
-        <% colors = ["teal", "purple", "orange", "green"] %>
-        <% specialty_colors = {
-             "Pansements complexes" => "badge-teal",
-             "Vaccination"          => "badge-blue",
-             "Soins Palliatifs"     => "badge-pink",
-             "Pédiatrie"            => "badge-purple",
-             "Gériatrie"            => "badge-orange"
-           } %>
-        <% @nurses.each_with_index do |nurse, index| %>
-          <% color = colors[index % colors.length] %>
+        <%
+          specialty_colors = {
+            "Pansements complexes" => "badge-teal",
+            "Vaccination"          => "badge-blue",
+            "Soins Palliatifs"     => "badge-pink",
+            "Pédiatrie"            => "badge-purple",
+            "Gériatrie"            => "badge-orange"
+          }
+        %>
+       <%
+          specialty_card_colors = {
+            "Vaccination"          => "purple",
+            "Pédiatrie"            => "purple",
+            "Injections"           => "purple",
+            "Perfusions"           => "purple",
+            "Soins Palliatifs"     => "blue",
+            "Personnes âgées"      => "blue",
+            "Gériatrie"            => "green",
+            "Suivi diabétique"     => "green",
+            "Pansements complexes" => "teal",
+            "Soins post-op."       => "teal"
+  }
+  priority_order = specialty_card_colors.keys
+%>
+        <% @nurses.each do |nurse| %>
+          <% main_specialty = nurse.specialties.first&.name %>
+          <% color = specialty_card_colors[main_specialty] || "teal" %>
           <%= render "nurses/nurse_card", nurse: nurse, color: color %>
         <% end %>
       <% end %>
@@ -208,7 +225,7 @@
         </div>
         <div
           data-controller="map"
-          data-map-nurses-value="<%= @nurses.each_with_index.map { |n, i| { name: "#{n.first_name} #{n.last_name}", initials: "#{n.first_name[0]}#{n.last_name[0]}", commune: n.commune.name, lat: n.commune.latitude, lng: n.commune.longitude, rating: n.average_rating, color: colors[i % colors.length] } }.to_json %>"
+          data-map-nurses-value="<%= @nurses.map { |n| { name: "#{n.first_name} #{n.last_name}", initials: "#{n.first_name[0]}#{n.last_name[0]}", commune: n.commune.name, lat: n.commune.latitude, lng: n.commune.longitude, rating: n.average_rating, color: specialty_card_colors[n.specialties.first&.name] || "teal" } }.to_json %>"
           class="map-placeholder"
           style="height: 100%; padding: 0; position: relative;"
         ></div>
