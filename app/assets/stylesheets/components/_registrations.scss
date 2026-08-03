@@ -1,0 +1,36 @@
+// Page "Créer un compte" (devise/registrations/new)
+.registration-card {
+  .card-body {
+    padding: 0.85rem !important;
+
+    input.form-control {
+      background-color: #ffffff !important;
+      border-radius: 8px !important;
+      padding: 0.35rem 0.6rem !important;
+      font-size: 0.8rem !important;
+    }
+
+    .btn-nursy-primary {
+      border-radius: 999px !important;
+      padding: 0.4rem !important;
+      font-size: 0.8rem !important;
+    }
+
+    label {
+      font-size: 0.75rem !important;
+      margin-bottom: 0.2rem !important;
+
+      abbr {
+        display: none !important;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 0.6rem !important;
+    }
+
+    .form-text {
+      font-size: 0.65rem !important;
+    }
+  }
+}

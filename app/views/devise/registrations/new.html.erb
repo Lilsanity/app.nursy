@@ -1,12 +1,15 @@
-<div class="row justify-content-center mt-5">
+<div class="row justify-content-center mt-5 mb-5" style="background-color: #ffffff;">
   <div class="col-12 col-md-6 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body p-4">
-        <h2 class="mb-4 text-center">Créer un compte</h2>
-
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden registration-card">
+      <div class="p-2 text-center" style="background: linear-gradient(135deg, #0BBFAA 0%, #0891B2 100%);">
+        <div class="rounded-circle mx-auto mb-1 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(255,255,255,0.2);">
+          <i class="fas fa-user-plus" style="color: #ffffff; font-size: 0.9rem;"></i>
+        </div>
+        <h2 class="mb-0 fw-bold" style="color: #ffffff; font-size: 1rem;">Créer un compte</h2>
+      </div>
+      <div class="card-body" style="background-color: #ffffff;">
         <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
           <%= f.error_notification %>
-
           <%= f.input :first_name,
                       required: true,
                       label: "Prénom",
@@ -28,10 +31,10 @@
           <%= f.input :password_confirmation,
                       required: true,
                       label: "Confirmation du mot de passe",
+                      hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
                       input_html: { autocomplete: "new-password" } %>
-
           <div class="d-grid mt-4">
-            <%= f.button :submit, "Créer mon compte", class: "btn-nursy-primary" %>
+            <%= f.button :submit, "Créer mon compte", class: "btn btn-nursy-primary" %>
           </div>
         <% end %>
 
