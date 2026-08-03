@@ -1,4 +1,13 @@
-<div style="background: linear-gradient(135deg, #00bfa5 0%, #007c91 100%); color: white; padding: 1.2rem 0;">
+<%
+  status_dot = { "Confirmé" => "#0BBFAA", "En attente" => "#8B5CF6" }
+  appointment_dates = {}
+  @appointments.each do |a|
+    d = a.availability.start_time.to_date
+    appointment_dates[d] = status_dot[a.status] || "#0BBFAA"
+  end
+%>
+
+<div style="background: linear-gradient(135deg, #0BBFAA 0%, #0891B2 100%); color: white; padding: 1.2rem 0;">
   <div class="container">
     <div class="d-flex align-items-center">
       <%= form_with url: my_space_photo_path, method: :patch, local: true do |f| %>
@@ -15,154 +24,192 @@
       <% end %>
       <div>
         <h2 class="mb-0 h6 fw-bold"><%= @user.first_name %> <%= @user.last_name %></h2>
-        <small class="opacity-75" style="font-size: 0.8rem;">Patient</small>
+        <% if @user.respond_to?(:commune) && @user.commune.present? %>
+          <small style="opacity: 0.85; font-size: 0.75rem;"><%= @user.commune %></small>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
 
-<div class="container my-4">
+<div class="container my-4" style="max-width: 1200px;">
   <h4 class="fw-bold mb-1">Mes rendez-vous</h4>
-  <p class="text-muted mb-4" style="font-size: 0.9rem;">Gérer et suivre vos rendez-vous à domicile</p>
+  <p class="mb-4 fw-bold" style="font-size: 0.9rem; color: #9CA3AF;">Gérer et suivre vos rendez-vous à domicile</p>
 
   <div class="row">
-    <div class="col-md-4">
-      <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.8rem;">Calendrier</h6>
+    <div class="col-md-4" style="margin-top: 24px;">
+      <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.8rem; color: #9CA3AF;">Calendrier</h6>
       <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background-color: #ffffff;">
-        <div style="height: 4px; background: linear-gradient(to right, #00bfa5, #007c91);"></div>
         <div class="p-3">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0 text-capitalize" style="font-size: 0.9rem;"><%= l(Date.today, format: "%B %Y") %></h6>
-            <div>
-              <button class="btn btn-sm border-0 p-0 text-primary"><</button>
-              <button class="btn btn-sm border-0 p-0 text-primary">></button>
+            <h6 class="fw-bold mb-0 text-capitalize" style="font-size: 0.9rem;"><%= l(@calendar_month, format: "%B %Y") %></h6>
+            <div class="d-flex gap-1">
+              <%= link_to "‹", my_space_path(month: @calendar_month.prev_month.strftime("%Y-%m-01")), class: "btn btn-sm border-0 d-flex align-items-center justify-content-center", style: "width: 24px; height: 24px; background: #E6FAF7; color: #0BBFAA; border-radius: 6px;" %>
+              <%= link_to "›", my_space_path(month: @calendar_month.next_month.strftime("%Y-%m-01")), class: "btn btn-sm border-0 d-flex align-items-center justify-content-center", style: "width: 24px; height: 24px; background: #E6FAF7; color: #0BBFAA; border-radius: 6px;" %>
             </div>
           </div>
           <div class="row text-center mb-2">
             <% %w[LU MA ME JE VE SA DI].each do |day| %>
-              <div class="col text-muted fw-bold" style="font-size: 0.65rem;"><%= day %></div>
+              <div class="col fw-bold" style="font-size: 0.65rem; color: #0BBFAA;"><%= day %></div>
             <% end %>
           </div>
           <div class="row text-center">
-            <% first_day = Date.today.beginning_of_month %>
+            <% first_day = @calendar_month.beginning_of_month %>
             <% (1..first_day.wday - 1).each do |_| %>
               <div class="col-1" style="width: 14.28%;"></div>
             <% end %>
             <% (first_day..first_day.end_of_month).each do |date| %>
               <div class="col-1 p-1" style="width: 14.28%;">
-                <div class="<%= date == Date.today ? 'border border-primary rounded-2 text-primary' : '' %>" style="width: 26px; height: 26px; line-height: 26px; margin: auto; font-size: 0.75rem;">
+                <div class="rounded-2" style="width: 26px; height: 26px; line-height: 26px; margin: auto; font-size: 0.75rem; position: relative; <%= date == Date.today ? 'border: 1px solid #0BBFAA; color: #0BBFAA; background: #E6FAF7;' : '' %>">
                   <%= date.day %>
+                  <% if appointment_dates[date] %>
+                    <span style="position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: <%= appointment_dates[date] %>;"></span>
+                  <% end %>
                 </div>
               </div>
             <% end %>
           </div>
+          <div class="d-flex gap-3 mt-3 pt-2" style="border-top: 1px solid #f1f1f1; font-size: 0.68rem; color: #6c757d;">
+            <span><span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#0BBFAA; margin-right:3px;"></span>Confirmé</span>
+            <span><span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#8B5CF6; margin-right:3px;"></span>En attente</span>
+            <span><span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#0891B2; margin-right:3px;"></span>Aujourd'hui</span>
+          </div>
         </div>
       </div>
       <div class="row mt-3 g-2">
-        <% [{n: 3, t: "Demandes", c: "#e0f2f1"}, {n: 2, t: "En cours", c: "#ede7f6"}, {n: 1, t: "Terminé", c: "#fff3e0"}, {n: "4.9", t: "Note", c: "#e8f5e9"}].each do |box| %>
+        <% [{n: 3, t: "Demandes", bg: "#E6FAF7", c: "#0BBFAA"}, {n: 2, t: "En cours", bg: "#F3F0FF", c: "#8B5CF6"}, {n: 1, t: "Terminé", bg: "#FFF3E0", c: "#F59E0B"}, {n: "4.9", t: "Note moy.", bg: "#E6FAF7", c: "#0891B2"}].each do |box| %>
           <div class="col-3">
-            <div class="card p-2 text-center border-0 shadow-sm rounded-3" style="background: <%= box[:c] %>;">
-              <div class="fw-bold" style="font-size: 0.85rem;"><%= box[:n] %></div>
-              <small style="font-size: 0.6rem;"><%= box[:t] %></small>
+            <div class="card p-2 text-center border-0 shadow-sm rounded-3" style="background: <%= box[:bg] %>;">
+              <div class="fw-bold" style="font-size: 0.85rem; color: <%= box[:c] %>;"><%= box[:n] %></div>
+              <small style="font-size: 0.6rem; color: <%= box[:c] %>;"><%= box[:t] %></small>
             </div>
           </div>
         <% end %>
       </div>
     </div>
 
-    <div class="col-md-8">
-      <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.8rem;">Rendez-vous à venir</h6>
+    <div class="col-md-8 appointments-col" style="margin-left: 70px; margin-top: 24px;">
+      <h6 class="text-uppercase fw-bold mb-3" style="font-size: 0.8rem; color: #9CA3AF;">Rendez-vous à venir</h6>
       <% @appointments.each do |appointment| %>
-        <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden">
-          <div style="height: 5px; background: <%= appointment.status == 'Confirmé' ? '#00bfa5' : '#7e57c2' %>;"></div>
-          <div class="p-3 d-flex align-items-center">
-            <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px; background: <%= appointment.status == 'Confirmé' ? '#00bfa5' : '#7e57c2' %>; font-size: 0.9rem;">
-              <%= appointment.nurse.first_name[0] %><%= appointment.nurse.last_name[0] %>
-            </div>
-            <div style="flex-grow: 1;">
-              <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h6>
-              <div class="d-flex gap-3" style="font-size: 0.75rem; color: #6c757d;">
-                <span>📅 <%= l(appointment.availability.start_time, format: "%d/%m/%Y") %></span>
-                <span>🕒 <%= appointment.availability.start_time.strftime("%Hh%M") %></span>
-                <span>🏠 À domicile</span>
+        <% is_confirmed = appointment.status == "Confirmé" %>
+        <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden" style="background-color: #ffffff;">
+          <div class="px-3 py-2" style="background: #F9FAFB; border-bottom: 1px solid #f1f1f1;">
+            <small class="text-uppercase fw-bold text-muted" style="font-size: 0.68rem; letter-spacing: 0.5px;">
+              <%= l(appointment.availability.start_time, format: "%A %d %B %Y") %>
+            </small>
+          </div>
+          <div class="p-3">
+            <div class="d-flex align-items-center mb-2">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3 overflow-hidden" style="width: 40px; height: 40px; background: <%= is_confirmed ? '#0BBFAA' : '#8B5CF6' %>; font-size: 0.9rem; flex-shrink: 0;">
+                <% if appointment.nurse.photo.attached? %>
+                  <%= image_tag appointment.nurse.photo, alt: "Photo de #{appointment.nurse.first_name} #{appointment.nurse.last_name}", style: "width: 100%; height: 100%; object-fit: cover;" %>
+                <% else %>
+                  <%= appointment.nurse.first_name[0] %><%= appointment.nurse.last_name[0] %>
+                <% end %>
+              </div>
+              <div style="flex-grow: 1;">
+                <h6 class="mb-0 fw-bold" style="font-size: 0.9rem;"><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h6>
+                <small class="text-muted" style="font-size: 0.75rem;">Infirmière libérale</small>
               </div>
             </div>
-            <div class="text-end me-4">
-              <div class="fw-bold" style="font-size: 1rem;"><%= number_to_currency(appointment.price, unit: "€", format: "%n %u") %></div>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <span class="badge fw-medium px-3 py-2" style="background: #E6FAF7; color: #0BBFAA; font-size: 0.75rem; border-radius: 8px;">
+                🕒 <%= appointment.availability.start_time.strftime("%Hh%M") %> – <%= appointment.availability.end_time.strftime("%Hh%M") %>
+              </span>
+              <span class="badge fw-medium px-3 py-2" style="background: #ffffff; color: #495057; border: 1px solid #dee2e6; font-size: 0.75rem; border-radius: 8px;">
+                🏠 À domicile
+              </span>
             </div>
-            <div class="d-flex gap-2">
-              <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">Modifier</button>
-              <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">Annuler</button>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge fw-medium px-3 py-2" style="background: <%= is_confirmed ? '#E6FAF7' : '#FFF3E0' %>; color: <%= is_confirmed ? '#0BBFAA' : '#F59E0B' %>; font-size: 0.75rem; border-radius: 8px;">
+                  <%= is_confirmed ? "✓ Confirmé" : "⏳ En attente" %>
+                </span>
+                <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">
+                  Annuler le RDV
+                </button>
+                <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">
+                  Modifier
+                </button>
+              </div>
+              <div class="fw-bold" style="font-size: 0.95rem;"><%= number_to_currency(appointment.price, unit: "€", format: "%n %u") %></div>
             </div>
           </div>
         </div>
 
         <div class="modal fade" id="cancelModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content rounded-4 border-0 shadow-sm">
-                <div class="modal-body p-4 text-center">
-                  <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: #fce8e6;">
-                    <i class="fas fa-exclamation-triangle" style="color: #ea4335; font-size: 1.3rem;"></i>
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-sm">
+              <div class="modal-body p-4 text-center">
+                <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: #fce8e6;">
+                  <i class="fas fa-exclamation-triangle" style="color: #ea4335; font-size: 1.3rem;"></i>
+                </div>
+                <h5 class="fw-bold mb-2">Annuler ce rendez-vous ?</h5>
+                <p class="text-muted mb-4">
+                  Avec <strong><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></strong><br>
+                  <%= l(appointment.availability.start_time, format: "%A %d %B à %Hh%M") %>
+                </p>
+                <%= form_with model: appointment, url: appointment_path(appointment), method: :delete, local: true do %>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Retour</button>
+                    <button type="submit" class="btn btn-nursy-primary w-50">Annuler le RDV</button>
                   </div>
-                  <h5 class="fw-bold mb-2">Annuler ce rendez-vous ?</h5>
-                  <p class="text-muted mb-4">
-                    Avec <strong><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></strong><br>
-                    <%= l(appointment.availability.start_time, format: "%A %d %B à %Hh%M") %>
-                  </p>
-                  <%= form_with model: appointment, url: appointment_path(appointment), method: :delete, local: true do %>
-                    <div class="d-flex gap-2">
-                      <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Retour</button>
-                      <button type="submit" class="btn btn-nursy-primary w-50">Annuler le RDV</button>
-                    </div>
-                  <% end %>
-                </div>
+                <% end %>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="modal fade" id="rescheduleModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content rounded-4 border-0 shadow-sm">
-                <div class="modal-body p-4" data-controller="slot-picker">
-                  <h5 class="fw-bold mb-3 text-center">Choisir un nouveau créneau</h5>
-                  <p class="text-muted text-center mb-3" style="font-size: 0.85rem;">
-                    Avec <strong><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></strong>
-                  </p>
-                  <%= form_with model: appointment, url: appointment_path(appointment), method: :patch, local: true do |f| %>
-                    <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
-                      <% appointment.reschedulable_slots.each do |slot| %>
-                        <% current = slot.id == appointment.availability_id %>
-                        <button type="button"
-                                class="btn btn-nursy-pill px-3"
-                                data-slot-picker-target="option"
-                                data-action="click->slot-picker#select"
-                                data-availability-id="<%= slot.id %>"
-                                data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>"
-                                style="<%= 'border-color: #00a896; color: #00a896; background: #e0f8f1;' if current %>">
-                          <%= l(slot.start_time, format: "%d/%m %Hh%M") %>
-                        </button>
-                      <% end %>
-                    </div>
-                    <%= f.hidden_field :availability_id, value: appointment.availability_id, data: { slot_picker_target: "availabilityInput" } %>
-                    <div class="d-flex gap-2">
-                      <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Retour</button>
-                      <%= f.submit "Confirmer", class: "btn btn-nursy-primary w-50" %>
-                    </div>
-                  <% end %>
-                </div>
+        <div class="modal fade" id="rescheduleModal-<%= appointment.id %>" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-sm">
+              <div class="modal-body p-4" data-controller="slot-picker">
+                <h5 class="fw-bold mb-3 text-center">Choisir un nouveau créneau</h5>
+                <p class="text-muted text-center mb-3" style="font-size: 0.85rem;">
+                  Avec <strong><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></strong>
+                </p>
+                <%= form_with model: appointment, url: appointment_path(appointment), method: :patch, local: true do |f| %>
+                  <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                    <% appointment.reschedulable_slots.each do |slot| %>
+                      <% current = slot.id == appointment.availability_id %>
+                      <button type="button"
+                              class="btn btn-nursy-pill px-3"
+                              data-slot-picker-target="option"
+                              data-action="click->slot-picker#select"
+                              data-availability-id="<%= slot.id %>"
+                              data-slot-label="<%= l(slot.start_time, format: "%A %d %B à %Hh%M") %>"
+                              style="<%= 'border-color: #0BBFAA; color: #0BBFAA; background: #E6FAF7;' if current %>">
+                        <%= l(slot.start_time, format: "%d/%m %Hh%M") %>
+                      </button>
+                    <% end %>
+                  </div>
+                  <%= f.hidden_field :availability_id, value: appointment.availability_id, data: { slot_picker_target: "availabilityInput" } %>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Retour</button>
+                    <%= f.submit "Confirmer", class: "btn btn-nursy-primary w-50" %>
+                  </div>
+                <% end %>
               </div>
             </div>
           </div>
+        </div>
       <% end %>
-      <%= link_to "+ Nouveau rendez-vous", nurses_path, class: "btn btn-nursy-primary w-100 mt-1" %>
+
+      <%= link_to nurses_path, class: "btn btn-nursy-primary w-100 mt-1" do %>
+        + Nouveau rendez-vous
+      <% end %>
 
       <% if @reviewable_appointments.any? %>
         <h6 class="text-uppercase text-muted mb-3 mt-4" style="font-size: 0.8rem;">Rendez-vous terminés</h6>
         <% @reviewable_appointments.each do |appointment| %>
-          <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden">
+          <div class="card mb-3 shadow-sm border-0 rounded-4 overflow-hidden" style="background-color: #ffffff;">
             <div class="p-3 d-flex align-items-center">
-              <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px; background: #6c757d; font-size: 0.9rem;">
-                <%= appointment.nurse.first_name[0] %><%= appointment.nurse.last_name[0] %>
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white me-3 overflow-hidden" style="width: 40px; height: 40px; background: #6c757d; font-size: 0.9rem;">
+                <% if appointment.nurse.photo.attached? %>
+                  <%= image_tag appointment.nurse.photo, alt: "Photo de #{appointment.nurse.first_name} #{appointment.nurse.last_name}", style: "width: 100%; height: 100%; object-fit: cover;" %>
+                <% else %>
+                  <%= appointment.nurse.first_name[0] %><%= appointment.nurse.last_name[0] %>
+                <% end %>
               </div>
               <div style="flex-grow: 1;">
                 <h6 class="mb-1 fw-bold" style="font-size: 0.9rem;"><%= appointment.nurse.first_name %> <%= appointment.nurse.last_name %></h6>

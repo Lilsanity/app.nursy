@@ -62,10 +62,12 @@ class NursesController < ApplicationController
         "nurses.*, (6371 * acos(LEAST(1, GREATEST(-1, cos(radians(#{ref_lat})) * cos(radians(communes.latitude)) * cos(radians(communes.longitude) - radians(#{ref_lng})) + sin(radians(#{ref_lat})) * sin(radians(communes.latitude)))))) AS distance_km"
       ).order("distance_km ASC")
     end
+
+    @nurses = @nurses.with_attached_photo
   end
 
   def show
-    @nurse = Nurse.includes(:commune, :specialties).find(params[:id])
+    @nurse = Nurse.includes(:commune, :specialties).with_attached_photo.find(params[:id])
     @availabilities = @nurse.availabilities
                             .where(is_booked: false)
                             .where('start_time >= ?', Time.current)

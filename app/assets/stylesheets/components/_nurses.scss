@@ -1,11 +1,12 @@
 // Les deux seuls styles de bouton de l'app : primaire (dégradé vert) et pilule (secondaire/sélection)
 .btn-nursy-primary {
-  background: linear-gradient(135deg, #1fd1ac, #00a896);
+  background: linear-gradient(135deg, #0BBFAA, #0891B2);
   color: #ffffff;
   border: 2px solid transparent;
-  border-radius: 999px;
+  border-radius: 12px;
   font-weight: 700;
-  padding: 0.5rem 1.25rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
 }
 
 .btn-nursy-primary:hover,
@@ -18,15 +19,22 @@
   background: #ffffff;
   color: #495057;
   border: 2px solid #dee2e6;
-  border-radius: 999px;
+  border-radius: 12px;
   font-weight: 700;
-  padding: 0.5rem 1.25rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
 }
 
 .btn-nursy-pill:hover,
 .btn-nursy-pill:focus {
   border-color: #00a896;
   color: #00a896;
+}
+
+.btn-nursy-pill.selected {
+  background: #0BBFAA;
+  border-color: #0BBFAA;
+  color: #ffffff;
 }
 
 .nurses-banner {
@@ -129,7 +137,26 @@
 .card-purple { border: 3px solid #8B5CF6; border-left: 6px solid #8B5CF6; }
 .card-orange { border: 3px solid #F59E0B; border-left: 6px solid #F59E0B; }
 .card-green  { border: 3px solid #10B981; border-left: 6px solid #10B981; }
+.card-blue { border: 3px solid #3B82F6; border-left: 6px solid #3B82F6; }
+.avatar-blue { background: linear-gradient(135deg, #3B82F6, #FFFFFF); }
+.badge-blue-icon { background: #3B82F6; }
+.card-pink   { border: 3px solid #EC4899; border-left: 6px solid #EC4899; }
+.card-indigo { border: 3px solid #6366F1; border-left: 6px solid #6366F1; }
+.card-cyan   { border: 3px solid #06B6D4; border-left: 6px solid #06B6D4; }
+.card-amber  { border: 3px solid #FBBF24; border-left: 6px solid #FBBF24; }
+.card-red    { border: 3px solid #EF4444; border-left: 6px solid #EF4444; }
 
+.avatar-pink   { background: linear-gradient(135deg, #EC4899, #FFFFFF); }
+.avatar-indigo { background: linear-gradient(135deg, #6366F1, #FFFFFF); }
+.avatar-cyan   { background: linear-gradient(135deg, #06B6D4, #FFFFFF); }
+.avatar-amber  { background: linear-gradient(135deg, #FBBF24, #FFFFFF); }
+.avatar-red    { background: linear-gradient(135deg, #EF4444, #FFFFFF); }
+
+.badge-pink-icon   { background: #EC4899; }
+.badge-indigo-icon { background: #6366F1; }
+.badge-cyan-icon   { background: #06B6D4; }
+.badge-amber-icon  { background: #FBBF24; }
+.badge-red-icon    { background: #EF4444; }
 
 .nurse-avatar {
   width: 48px;
@@ -462,4 +489,10 @@ body {
 .no-results-icon {
   font-size: 32px;
   color: #D1D5DB;
+}
+
+.appointments-col {
+  max-width: 550px !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
 }

@@ -12,14 +12,6 @@
     "Personnes âgées"      => { bg: "#fce8e6", text: "#ea4335" }
   }
 
-  review_themes = [
-    { border: "#00a896", bg: "#f0fbf9" },
-    { border: "#00b4d8", bg: "#f0faff" },
-    { border: "#6f42c1", bg: "#f8f5ff" },
-    { border: "#ff9800", bg: "#fff6f0" },
-    { border: "#ea4335", bg: "#fdf0ef" }
-  ]
-
   is_female = @nurse.female?
 
   job_title = is_female ? "Infirmière libérale diplômée d'État" : "Infirmier libéral diplômé d'État"
@@ -81,7 +73,11 @@
   <div class="d-flex justify-content-between align-items-start mb-4">
     <div class="d-flex align-items-center">
       <div class="me-4 position-relative">
-        <%= image_tag "https://ui-avatars.com/api/?name=#{@nurse.first_name}+#{@nurse.last_name}&size=120&rounded=true&background=00a896&color=ffffff", alt: "Avatar", class: "rounded-circle", style: "width: 100px; height: 100px; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,168,150,0.15);" %>
+        <% if @nurse.photo.attached? %>
+          <%= image_tag @nurse.photo, alt: "Photo de #{@nurse.first_name} #{@nurse.last_name}", class: "rounded-circle", style: "width: 100px; height: 100px; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,168,150,0.15);" %>
+        <% else %>
+          <%= image_tag "https://ui-avatars.com/api/?name=#{@nurse.first_name}+#{@nurse.last_name}&size=120&rounded=true&background=00a896&color=ffffff", alt: "Avatar", class: "rounded-circle", style: "width: 100px; height: 100px; object-fit: cover; border: 3px solid #ffffff; box-shadow: 0 4px 12px rgba(0,168,150,0.15);" %>
+        <% end %>
         <span class="position-absolute d-flex align-items-center justify-content-center rounded-circle" style="width: 28px; height: 28px; background-color: #00a896; color: white; font-size: 13px; right: 0px; bottom: 0px; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
           <i class="fas fa-check"></i>
         </span>
@@ -282,7 +278,7 @@
           <div class="modal fade" id="confirmAppointmentModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content rounded-4 border-0 shadow-sm">
-                <div class="modal-body p-4 text-center">
+                <div class="modal-body p-4 text-center" data-controller="beneficiary-toggle">
                   <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: #e0f8f1;">
                     <i class="fas fa-calendar-check" style="color: #00a896; font-size: 1.4rem;"></i>
                   </div>
@@ -294,6 +290,27 @@
                   <%= form_with model: Appointment.new, url: appointments_path, local: true do |f| %>
                     <%= f.hidden_field :nurse_id, value: @nurse.id %>
                     <%= f.hidden_field :availability_id, data: { slot_picker_target: "availabilityInput" } %>
+
+                    <div class="text-start mb-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="beneficiaryCheck" data-action="change->beneficiary-toggle#toggle">
+                        <label class="form-check-label" for="beneficiaryCheck" style="font-size: 0.9rem;">
+                          Prendre rendez-vous pour une autre personne
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="text-start mb-3 d-none" data-beneficiary-toggle-target="fields">
+                      <div class="mb-2">
+                        <%= f.label :beneficiary_name, "Nom de la personne", class: "form-label", style: "font-size: 0.85rem;" %>
+                        <%= f.text_field :beneficiary_name, class: "form-control form-control-sm" %>
+                      </div>
+                      <div class="mb-2">
+                        <%= f.label :beneficiary_phone, "Téléphone", class: "form-label", style: "font-size: 0.85rem;" %>
+                        <%= f.text_field :beneficiary_phone, class: "form-control form-control-sm" %>
+                      </div>
+                    </div>
+
                     <div class="d-flex gap-2">
                       <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Annuler</button>
                       <%= f.submit "Confirmer", class: "btn btn-nursy-primary w-50" %>
@@ -327,67 +344,62 @@
 
       <div class="mb-4">
         <% if @reviews.any? %>
-          <% @reviews.limit(3).each_with_index do |review, index| %>
-            <% theme = review_themes[index % review_themes.length] %>
-            <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid <%= theme[:border] %>; border-left: 5px solid <%= theme[:border] %>; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <div class="d-flex align-items-center">
-                  <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: <%= theme[:border] %>; font-size: 0.95rem;">
-                    <%= review.user.first_name[0] %><%= review.user.last_name[0] %>
-                  </div>
-                  <div>
-                    <strong class="d-block text-dark" style="font-size: 0.9rem;"><%= review.user.first_name %> <%= review.user.last_name[0] %>.</strong>
-                    <small style="color: #6c757d; font-size: 0.75rem;">Il y a <%= time_ago_in_words(review.created_at) %> - <%= @nurse.commune.name %></small>
-                  </div>
+          <% @reviews.limit(3).each do |review| %>
+            <div class="mb-3 p-3 position-relative" style="border-radius: 12px; background: #F9FAFB;">
+              <span class="position-absolute" style="top: 8px; right: 14px; font-size: 28px; color: #D1D5DB; font-family: Georgia, serif; line-height: 1;">"</span>
+              <div class="d-flex align-items-center mb-2">
+                <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 36px; height: 36px; background-color: #0BBFAA; font-size: 0.9rem;">
+                  <%= review.user.first_name[0] %><%= review.user.last_name[0] %>
                 </div>
-                <div class="text-warning" style="font-size: 0.7rem;">
-                  <% review.rating.to_i.times do %><i class="fas fa-star"></i><% end %>
+                <div>
+                  <strong class="d-block text-dark" style="font-size: 0.9rem;"><%= review.user.first_name %> <%= review.user.last_name[0] %>.</strong>
+                  <div class="text-warning" style="font-size: 0.7rem;">
+                    <% review.rating.to_i.times do %><i class="fas fa-star"></i><% end %>
+                  </div>
                 </div>
               </div>
               <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"<%= review.comment %>"</p>
+              <small style="color: #9ca3af; font-size: 0.7rem;">Il y a <%= time_ago_in_words(review.created_at) %> - <%= @nurse.commune.name %></small>
             </div>
           <% end %>
         <% else %>
-          <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid #00a896; border-left: 5px solid #00a896; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div class="d-flex align-items-center">
-                <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: #00a896; font-size: 0.95rem;">JP</div>
-                <div>
-                  <strong class="d-block text-dark" style="font-size: 0.9rem;">Jean P.</strong>
-                  <small style="color: #6c757d; font-size: 0.75rem;">Il y a 3 jours - <%= @nurse.commune.name %></small>
-                </div>
+          <div class="mb-3 p-3 position-relative" style="border-radius: 12px; background: #F9FAFB;">
+            <span class="position-absolute" style="top: 8px; right: 14px; font-size: 28px; color: #D1D5DB; font-family: Georgia, serif; line-height: 1;">"</span>
+            <div class="d-flex align-items-center mb-2">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 36px; height: 36px; background-color: #0BBFAA; font-size: 0.9rem;">JP</div>
+              <div>
+                <strong class="d-block text-dark" style="font-size: 0.9rem;">Jean P.</strong>
+                <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
               </div>
-              <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
             </div>
             <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"Très <%= gender_pro_adj %>, <%= gender_punct_adj %> et <%= gender_douce %>. Je recommande vivement."</p>
+            <small style="color: #9ca3af; font-size: 0.7rem;">Il y a 3 jours - <%= @nurse.commune.name %></small>
           </div>
 
-          <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid #00b4d8; border-left: 5px solid #00b4d8; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div class="d-flex align-items-center">
-                <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: #00b4d8; font-size: 0.95rem;">ML</div>
-                <div>
-                  <strong class="d-block text-dark" style="font-size: 0.9rem;">Marie L.</strong>
-                  <small style="color: #6c757d; font-size: 0.75rem;">Il y a 1 semaine - <%= @nurse.commune.name %></small>
-                </div>
+          <div class="mb-3 p-3 position-relative" style="border-radius: 12px; background: #F9FAFB;">
+            <span class="position-absolute" style="top: 8px; right: 14px; font-size: 28px; color: #D1D5DB; font-family: Georgia, serif; line-height: 1;">"</span>
+            <div class="d-flex align-items-center mb-2">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 36px; height: 36px; background-color: #0BBFAA; font-size: 0.9rem;">ML</div>
+              <div>
+                <strong class="d-block text-dark" style="font-size: 0.9rem;">Marie L.</strong>
+                <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
               </div>
-              <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
             </div>
             <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"Excellente prise en charge pour ma mère. <%= gender_rassurante %> et <%= gender_competente %>."</p>
+            <small style="color: #9ca3af; font-size: 0.7rem;">Il y a 1 semaine - <%= @nurse.commune.name %></small>
           </div>
 
-          <div class="mb-3 p-3 bg-white" style="border-radius: 12px; border: 1px solid #6f42c1; border-left: 5px solid #6f42c1; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <div class="d-flex align-items-center">
-                <div class="rounded d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 40px; height: 40px; background-color: #6f42c1; font-size: 0.95rem;">TR</div>
-                <div>
-                  <strong class="d-block text-dark" style="font-size: 0.9rem;">Thomas R.</strong>
-                  <small style="color: #6c757d; font-size: 0.75rem;">Il y a 2 semaines - <%= @nurse.commune.name %></small>
-                </div>
+          <div class="mb-3 p-3 position-relative" style="border-radius: 12px; background: #F9FAFB;">
+            <span class="position-absolute" style="top: 8px; right: 14px; font-size: 28px; color: #D1D5DB; font-family: Georgia, serif; line-height: 1;">"</span>
+            <div class="d-flex align-items-center mb-2">
+              <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold me-3" style="width: 36px; height: 36px; background-color: #0BBFAA; font-size: 0.9rem;">TR</div>
+              <div>
+                <strong class="d-block text-dark" style="font-size: 0.9rem;">Thomas R.</strong>
+                <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
               </div>
-              <div class="text-warning" style="font-size: 0.7rem;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
             </div>
             <p class="mb-0 lh-base text-dark" style="font-size: 0.85rem;">"Réactivité exemplaire, disponible en <%= response_time %> pour une urgence."</p>
+            <small style="color: #9ca3af; font-size: 0.7rem;">Il y a 2 semaines - <%= @nurse.commune.name %></small>
           </div>
         <% end %>
       </div>

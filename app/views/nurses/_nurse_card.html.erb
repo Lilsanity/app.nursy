@@ -8,8 +8,12 @@
   }
 %>
 <div class="nurse-card mb-3 card-<%= color %>">
-  <div class="nurse-avatar avatar-<%= color %>">
-    <%= nurse.first_name[0] %><%= nurse.last_name[0] %>
+  <div class="nurse-avatar <%= "avatar-#{color}" unless nurse.photo.attached? %>">
+    <% if nurse.photo.attached? %>
+      <%= image_tag nurse.photo, alt: "Photo de #{nurse.first_name} #{nurse.last_name}", style: "width: 100%; height: 100%; object-fit: cover; border-radius: 14px;" %>
+    <% else %>
+      <%= nurse.first_name[0] %><%= nurse.last_name[0] %>
+    <% end %>
     <span class="avatar-badge badge-<%= color %>-icon">
       <i class="fas fa-user-check"></i>
     </span>
@@ -20,7 +24,6 @@
     <p class="nurse-rating"><i class="fas fa-star"></i> <%= nurse.average_rating %></p>
   </div>
   <div class="d-flex gap-2 flex-wrap">
-    <span class="badge-rpps">RPPS vérifié</span>
     <% nurse.specialties.each do |specialty| %>
       <% color_class = specialty_colors[specialty.name] || "badge-teal" %>
       <span class="<%= color_class %>"><%= specialty.name %></span>
