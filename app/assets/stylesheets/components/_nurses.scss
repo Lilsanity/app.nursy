@@ -31,6 +31,12 @@
   color: #00a896;
 }
 
+.btn-nursy-pill.selected {
+  background: #0BBFAA;
+  border-color: #0BBFAA;
+  color: #ffffff;
+}
+
 .nurses-banner {
   background: linear-gradient(90deg, #0BBFAA, #0891B2);
   padding: 16px 24px;
@@ -483,49 +489,6 @@ body {
 .no-results-icon {
   font-size: 32px;
   color: #D1D5DB;
-}
-
-.btn-slot {
-  background: #E6FAF7;
-  color: #0BBFAA;
-  border: 2px solid #0BBFAA;
-  border-radius: 14px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  padding: 1rem 1.25rem;
-  white-space: nowrap;
-}
-.btn-slot:hover,
-.btn-slot:focus {
-  background: #0BBFAA;
-  color: #ffffff;
-}
-
-.btn-slot.selected {
-  background: #0BBFAA;
-  color: #ffffff;
-}
-
-.btn-nursy-action {
-  background: #ffffff;
-  color: #1a1a1a;
-  border: 2px solid #dee2e6;
-  border-radius: 14px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  padding: 1rem 1.25rem;
-}
-.btn-nursy-action:hover,
-.btn-nursy-action:focus {
-  background: #f5f5f5;
-  border-color: #adb5bd;
-}
-
-.btn-nursy-action:disabled {
-  opacity: 1;
-  border-color: #dee2e6;
-  color: #1a1a1a;
-  background: #ffffff;
 }
 
 .appointments-col {

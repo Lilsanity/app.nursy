@@ -125,10 +125,10 @@
                 <span class="badge fw-medium px-3 py-2" style="background: <%= is_confirmed ? '#E6FAF7' : '#FFF3E0' %>; color: <%= is_confirmed ? '#0BBFAA' : '#F59E0B' %>; font-size: 0.75rem; border-radius: 8px;">
                   <%= is_confirmed ? "✓ Confirmé" : "⏳ En attente" %>
                 </span>
-                <button type="button" class="btn btn-nursy-action" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">
+                <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#cancelModal-<%= appointment.id %>">
                   Annuler le RDV
                 </button>
-                <button type="button" class="btn btn-nursy-action" style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 8px;" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">
+                <button type="button" class="btn btn-nursy-pill btn-sm" data-bs-toggle="modal" data-bs-target="#rescheduleModal-<%= appointment.id %>">
                   Modifier
                 </button>
               </div>
