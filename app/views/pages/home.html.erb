@@ -32,26 +32,8 @@
         <%= link_to "Voir tous les résultats →", nurses_path(commune: params[:commune]), class: "see-all-link" %>
       </div>
       <div class="results-grid">
-        <%
-          specialty_card_colors = {
-            "Pansements complexes" => "teal",
-            "Vaccination"          => "green",
-            "Soins Palliatifs"     => "pink",
-            "Pédiatrie"            => "purple",
-            "Gériatrie"            => "orange",
-            "Injections"           => "indigo",
-            "Perfusions"           => "cyan",
-            "Suivi diabétique"     => "amber",
-            "Soins post-op."       => "blue",
-            "Personnes âgées"      => "red"
-          }
-          priority_order = specialty_card_colors.keys
-        %>
         <% @nurses.each do |nurse| %>
-          <% nurse_specialty_names = nurse.specialties.map(&:name) %>
-          <% main_specialty = priority_order.find { |s| nurse_specialty_names.include?(s) } %>
-          <% color = specialty_card_colors[main_specialty] || "teal" %>
-          <%= render "nurses/nurse_card", nurse: nurse, color: color %>
+          <%= render "nurses/nurse_card", nurse: nurse %>
         <% end %>
       </div>
     <% else %>

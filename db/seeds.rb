@@ -54,7 +54,7 @@ users = [
   User.create!(first_name: "Lucas",  last_name: "Petit",   email: "lucas@gmail.com",  password: "password", phone: "0656789012", commune: "Lyon"),
 ]
 
-def review_comment_for(nurse)
+def review_comment_templates(nurse)
   professionnel = nurse.female? ? "professionnelle" : "professionnel"
   ponctuel      = nurse.female? ? "ponctuelle" : "ponctuel"
   doux          = nurse.female? ? "douce" : "doux"
@@ -74,7 +74,7 @@ def review_comment_for(nurse)
     "Toujours disponible et très aimable. Je recommande sans hésitation.",
     "#{un_e_vrai_e} #{professionnel}, #{doux} et efficace. Merci !",
     "#{ponctuel.capitalize} et très #{serieux}. Mes parents sont en de bonnes mains.",
-  ].sample
+  ]
 end
 
 puts "Création des infirmiers génériques..."
@@ -111,6 +111,7 @@ nurses_data.each do |attrs|
     end
   end
 
+  available_comments = review_comment_templates(nurse).shuffle
   users.sample(rand(2..4)).each do |user|
     availability = availabilities.reject(&:is_booked).sample
     next unless availability
@@ -126,7 +127,7 @@ nurses_data.each do |attrs|
       user:        user,
       appointment: appointment,
       rating:      rand(4..5),
-      comment:     review_comment_for(nurse)
+      comment:     available_comments.pop
     )
   end
 end
@@ -163,6 +164,7 @@ paris_nurses.each do |attrs|
     end
   end
 
+  available_comments = review_comment_templates(nurse).shuffle
   users.sample(rand(3..5)).each do |user|
     availability = availabilities.reject(&:is_booked).sample
     next unless availability
@@ -178,7 +180,7 @@ paris_nurses.each do |attrs|
       user:        user,
       appointment: appointment,
       rating:      rand(4..5),
-      comment:     review_comment_for(nurse)
+      comment:     available_comments.pop
     )
   end
 end

@@ -182,35 +182,8 @@
           </p>
         </div>
       <% else %>
-        <%
-          specialty_colors = {
-            "Pansements complexes" => "badge-teal",
-            "Vaccination"          => "badge-blue",
-            "Soins Palliatifs"     => "badge-pink",
-            "Pédiatrie"            => "badge-purple",
-            "Gériatrie"            => "badge-orange"
-          }
-        %>
-        <%
-          specialty_card_colors = {
-            "Pansements complexes" => "teal",
-            "Vaccination"          => "green",
-            "Soins Palliatifs"     => "pink",
-            "Pédiatrie"            => "purple",
-            "Gériatrie"            => "orange",
-            "Injections"           => "indigo",
-            "Perfusions"           => "cyan",
-            "Suivi diabétique"     => "amber",
-            "Soins post-op."       => "blue",
-            "Personnes âgées"      => "red"
-          }
-          priority_order = specialty_card_colors.keys
-        %>
         <% @nurses.each do |nurse| %>
-          <% nurse_specialty_names = nurse.specialties.map(&:name) %>
-          <% main_specialty = priority_order.find { |s| nurse_specialty_names.include?(s) } %>
-          <% color = specialty_card_colors[main_specialty] || "teal" %>
-          <%= render "nurses/nurse_card", nurse: nurse, color: color %>
+          <%= render "nurses/nurse_card", nurse: nurse %>
         <% end %>
       <% end %>
     </div>
@@ -226,7 +199,7 @@
         </div>
         <div
           data-controller="map"
-          data-map-nurses-value="<%= @nurses.map { |n| { name: "#{n.first_name} #{n.last_name}", initials: "#{n.first_name[0]}#{n.last_name[0]}", commune: n.commune.name, lat: n.commune.latitude, lng: n.commune.longitude, rating: n.average_rating, color: (specialty_card_colors[priority_order.find { |s| n.specialties.map(&:name).include?(s) }] || "teal") } }.to_json %>"
+          data-map-nurses-value="<%= @nurses.map { |n| { name: "#{n.first_name} #{n.last_name}", initials: "#{n.first_name[0]}#{n.last_name[0]}", commune: n.commune.name, lat: n.commune.latitude, lng: n.commune.longitude, rating: n.average_rating, color: n.card_color } }.to_json %>"
           class="map-placeholder"
           style="height: 100%; padding: 0; position: relative;"
         ></div>
