@@ -278,7 +278,7 @@
           <div class="modal fade" id="confirmAppointmentModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
               <div class="modal-content rounded-4 border-0 shadow-sm">
-                <div class="modal-body p-4 text-center">
+                <div class="modal-body p-4 text-center" data-controller="beneficiary-toggle">
                   <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; background: #e0f8f1;">
                     <i class="fas fa-calendar-check" style="color: #00a896; font-size: 1.4rem;"></i>
                   </div>
@@ -290,6 +290,27 @@
                   <%= form_with model: Appointment.new, url: appointments_path, local: true do |f| %>
                     <%= f.hidden_field :nurse_id, value: @nurse.id %>
                     <%= f.hidden_field :availability_id, data: { slot_picker_target: "availabilityInput" } %>
+
+                    <div class="text-start mb-3">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="beneficiaryCheck" data-action="change->beneficiary-toggle#toggle">
+                        <label class="form-check-label" for="beneficiaryCheck" style="font-size: 0.9rem;">
+                          Prendre rendez-vous pour une autre personne
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="text-start mb-3 d-none" data-beneficiary-toggle-target="fields">
+                      <div class="mb-2">
+                        <%= f.label :beneficiary_name, "Nom de la personne", class: "form-label", style: "font-size: 0.85rem;" %>
+                        <%= f.text_field :beneficiary_name, class: "form-control form-control-sm" %>
+                      </div>
+                      <div class="mb-2">
+                        <%= f.label :beneficiary_phone, "Téléphone", class: "form-label", style: "font-size: 0.85rem;" %>
+                        <%= f.text_field :beneficiary_phone, class: "form-control form-control-sm" %>
+                      </div>
+                    </div>
+
                     <div class="d-flex gap-2">
                       <button type="button" class="btn btn-nursy-pill w-50" data-bs-dismiss="modal">Annuler</button>
                       <%= f.submit "Confirmer", class: "btn btn-nursy-primary w-50" %>
