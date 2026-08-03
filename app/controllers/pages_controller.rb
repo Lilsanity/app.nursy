@@ -11,6 +11,7 @@ class PagesController < ApplicationController
     all_appointments = @user.appointments.includes(:nurse, :availability, :review).order(created_at: :desc)
     @appointments = all_appointments.select(&:upcoming?)
     @reviewable_appointments = all_appointments.reject(&:upcoming?).select { |a| a.review.blank? }
+    @calendar_month = params[:month].present? ? Date.parse(params[:month]) : Date.today.beginning_of_month
   end
 
   def update_photo
