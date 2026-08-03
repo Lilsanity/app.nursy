@@ -230,8 +230,13 @@
                   <%= form_with model: Review.new, url: reviews_path, local: true do |f| %>
                     <%= f.hidden_field :appointment_id, value: appointment.id %>
                     <div class="mb-3">
-                      <%= f.label :rating, "Note", class: "form-label fw-bold" %>
-                      <%= f.select :rating, (1..5).to_a.reverse.map { |n| ["#{n} étoile#{'s' if n > 1}", n] }, { prompt: "Choisissez une note" }, class: "form-select" %>
+                      <%= f.label :rating, "Note", class: "form-label fw-bold d-block" %>
+                      <div class="star-rating">
+                        <% (1..5).each do |n| %>
+                          <i class="fas fa-star star-icon" data-value="<%= n %>" style="font-size: 1.6rem; color: #dee2e6; cursor: pointer; margin-right: 6px;"></i>
+                        <% end %>
+                      </div>
+                      <%= f.hidden_field :rating, value: "", class: "rating-input" %>
                     </div>
                     <div class="mb-3">
                       <%= f.label :comment, "Commentaire", class: "form-label fw-bold" %>
@@ -251,3 +256,17 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("click", function(e) {
+    if (!e.target.classList.contains("star-icon")) return;
+    const container = e.target.closest(".star-rating");
+    const hiddenInput = container.nextElementSibling;
+    const value = parseInt(e.target.dataset.value, 10);
+    hiddenInput.value = value;
+
+    container.querySelectorAll(".star-icon").forEach(function(star) {
+      star.style.color = parseInt(star.dataset.value, 10) <= value ? "#ff9800" : "#dee2e6";
+    });
+  });
+</script>
