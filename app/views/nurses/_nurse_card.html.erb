@@ -1,12 +1,4 @@
-<%
-  specialty_colors = {
-    "Pansements complexes" => "badge-teal",
-    "Vaccination"          => "badge-blue",
-    "Soins Palliatifs"     => "badge-pink",
-    "Pédiatrie"            => "badge-purple",
-    "Gériatrie"            => "badge-orange"
-  }
-%>
+<% color = nurse.card_color %>
 <div class="nurse-card mb-3 card-<%= color %>">
   <div class="nurse-avatar <%= "avatar-#{color}" unless nurse.photo.attached? %>">
     <% if nurse.photo.attached? %>
@@ -25,8 +17,7 @@
   </div>
   <div class="d-flex gap-2 flex-wrap">
     <% nurse.specialties.each do |specialty| %>
-      <% color_class = specialty_colors[specialty.name] || "badge-teal" %>
-      <span class="<%= color_class %>"><%= specialty.name %></span>
+      <span class="badge-<%= nurse.specialty_color(specialty.name) %>"><%= specialty.name %></span>
     <% end %>
   </div>
   <%= link_to "Voir le profil", nurse_path(nurse), class: "btn btn-nursy-primary btn-sm" %>
