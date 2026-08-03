@@ -1,3 +1,5 @@
+require "open-uri"
+
 puts "Nettoyage de la base de données..."
 Review.destroy_all
 Appointment.destroy_all
@@ -22,6 +24,24 @@ generate_rpps_number = lambda do
   loop do
     number = [rand(1..9), *Array.new(10) { rand(0..9) }].join
     break number if used_rpps_numbers.add?(number)
+  end
+end
+
+used_portraits = Set.new
+attach_nurse_photo = lambda do |nurse|
+  gender_folder = nurse.female? ? "women" : "men"
+
+  loop do
+    index = rand(0..99)
+    key = "#{gender_folder}-#{index}"
+    next unless used_portraits.add?(key)
+
+    nurse.photo.attach(
+      io: URI.open("https://randomuser.me/api/portraits/#{gender_folder}/#{index}.jpg"),
+      filename: "nurse_#{nurse.id}.jpg",
+      content_type: "image/jpeg"
+    )
+    break
   end
 end
 
@@ -76,6 +96,7 @@ nurses_data.each do |attrs|
     average_rating: rand(3.5..5.0).round(1),
     is_verified:    true
   )
+  attach_nurse_photo.call(nurse)
 
   specialty_objects.sample(rand(1..2)).each { |s| NurseSpecialty.create!(nurse: nurse, specialty: s) }
 
@@ -127,6 +148,7 @@ paris_nurses.each do |attrs|
     average_rating: rand(4.0..5.0).round(1),
     is_verified:    true
   )
+  attach_nurse_photo.call(nurse)
 
   specialty_objects.sample(rand(1..2)).each { |s| NurseSpecialty.create!(nurse: nurse, specialty: s) }
 
