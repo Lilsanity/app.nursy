@@ -115,19 +115,19 @@
     <%= link_to "Voir dans Mon espace", my_space_path, class: "btn btn-nursy-primary w-100 mb-1" %>
     <%= link_to "Retour à la recherche", nurses_path, class: "btn btn-nursy-pill w-100 mb-2" %>
 
-    <div class="d-flex" style="border-top: 1px solid #eef2f1; padding-top: 0.5rem;">
-      <div class="d-flex align-items-center flex-fill">
-        <i class="fas fa-mobile-alt me-2" style="color: #00a896;"></i>
+    <div class="row g-2" style="border-top: 1px solid #eef2f1; padding-top: 0.5rem;">
+      <div class="col-6 d-flex align-items-start">
+        <i class="fas fa-mobile-alt me-2" style="color: #00a896; margin-top: 2px;"></i>
         <div>
           <small class="fw-bold d-block">SMS envoyé</small>
-          <small style="font-size: 0.65rem; color: <%= muted_green %>;">Confirmation dès acceptation</small>
+          <small class="d-block" style="font-size: 0.65rem; color: <%= muted_green %>;">Confirmation dès acceptation</small>
         </div>
       </div>
-      <div class="d-flex align-items-center flex-fill">
-        <i class="fas fa-envelope me-2" style="color: <%= specialty_theme[:text] %>;"></i>
+      <div class="col-6 d-flex align-items-start">
+        <i class="fas fa-envelope me-2" style="color: <%= specialty_theme[:text] %>; margin-top: 2px;"></i>
         <div>
           <small class="fw-bold d-block">E-mail envoyé</small>
-          <small style="font-size: 0.65rem; color: <%= muted_green %>;">Récapitulatif dans votre boîte</small>
+          <small class="d-block" style="font-size: 0.65rem; color: <%= muted_green %>;">Récapitulatif dans votre boîte</small>
         </div>
       </div>
     </div>
