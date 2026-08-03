@@ -7,12 +7,29 @@
   font-weight: 700;
   padding: 0.4rem 1rem;
   font-size: 0.9rem;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .btn-nursy-primary:hover,
 .btn-nursy-primary:focus {
   color: #ffffff;
   filter: brightness(1.05);
+}
+
+.btn-nursy-primary:focus,
+.btn-nursy-primary:focus-visible,
+.btn-nursy-primary:active {
+  border-color: #adb5bd !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-nursy-primary:disabled {
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  opacity: 0.65;
 }
 
 .btn-nursy-pill {
