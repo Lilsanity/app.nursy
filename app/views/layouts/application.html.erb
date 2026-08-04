@@ -36,15 +36,11 @@
 
         <ul class="navbar-nav ms-auto">
           <% if user_signed_in? %>
-            <li class="nav-item d-flex align-items-center me-3">
-              <% if current_user.photo.attached? %>
+            <% if current_user.photo.attached? %>
+              <li class="nav-item d-flex align-items-center me-3">
                 <%= image_tag current_user.photo, alt: "#{current_user.first_name} #{current_user.last_name}", class: "rounded-circle", style: "width: 36px; height: 36px; object-fit: cover;" %>
-              <% else %>
-                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: rgba(255,255,255,0.2);">
-                  <%= current_user.first_name[0] %><%= current_user.last_name[0] %>
-                </div>
-              <% end %>
-            </li>
+              </li>
+            <% end %>
             <li class="nav-item">
               <%= button_to destroy_user_session_path, method: :delete, class: "btn btn-nursy-pill btn-sm btn-logout" do %>
                 <i class="fas fa-arrow-right-from-bracket me-1"></i>Se déconnecter
