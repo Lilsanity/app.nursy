@@ -23,6 +23,10 @@
             <%= f.button :submit, "Se connecter", class: "btn btn-nursy-primary" %>
           </div>
         <% end %>
+
+        <div class="text-center mt-3">
+          <%= link_to "Mot de passe oublié ?", new_password_path(resource_name), class: "text-decoration-none", style: "color: #00a896; font-size: 0.85rem;" %>
+        </div>
       </div>
     </div>
   </div>
