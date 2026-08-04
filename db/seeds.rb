@@ -61,7 +61,6 @@ def review_comment_templates(nurse)
   rassurant     = nurse.female? ? "Rassurante" : "Rassurant"
   competent     = nurse.female? ? "compétente" : "compétent"
   attentionne   = nurse.female? ? "attentionnée" : "attentionné"
-  satisfait     = nurse.female? ? "satisfaite" : "satisfait"
   serieux       = nurse.female? ? "sérieuse" : "sérieux"
   un_e_vrai_e   = nurse.female? ? "Une vraie" : "Un vrai"
 
@@ -70,7 +69,7 @@ def review_comment_templates(nurse)
     "Excellente prise en charge pour ma mère. #{rassurant} et #{competent}.",
     "Réactivité exemplaire, disponible rapidement pour une urgence.",
     "Soins de grande qualité, très #{attentionne} et à l'écoute.",
-    "Je suis très #{satisfait}. Les soins ont été effectués avec soin et professionnalisme.",
+    "Prestation très satisfaisante, les soins ont été effectués avec soin et professionnalisme.",
     "Toujours disponible et très aimable. Je recommande sans hésitation.",
     "#{un_e_vrai_e} #{professionnel}, #{doux} et efficace. Merci !",
     "#{ponctuel.capitalize} et très #{serieux}. Mes parents sont en de bonnes mains.",
