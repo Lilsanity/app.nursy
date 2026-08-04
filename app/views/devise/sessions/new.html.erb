@@ -1,9 +1,13 @@
-<div class="row justify-content-center mt-5">
+<div class="row justify-content-center mt-5 mb-5" style="background-color: #ffffff;">
   <div class="col-12 col-md-6 col-lg-4">
-    <div class="card shadow-sm">
-      <div class="card-body p-4">
-        <h2 class="mb-4 text-center">Se connecter</h2>
-
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden registration-card">
+      <div class="p-2 text-center" style="background: linear-gradient(135deg, #0BBFAA 0%, #0891B2 100%);">
+        <div class="rounded-circle mx-auto mb-1 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; background: rgba(255,255,255,0.2);">
+          <i class="fas fa-right-to-bracket" style="color: #ffffff; font-size: 0.9rem;"></i>
+        </div>
+        <h2 class="mb-0 fw-bold" style="color: #ffffff; font-size: 1rem;">Se connecter</h2>
+      </div>
+      <div class="card-body" style="background-color: #ffffff;">
         <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
           <%= f.input :email,
                       required: false,
@@ -15,17 +19,10 @@
                       label: "Mot de passe",
                       input_html: { autocomplete: "current-password" } %>
           <%= f.input :remember_me, as: :boolean, label: "Se souvenir de moi" if devise_mapping.rememberable? %>
-
           <div class="d-grid mt-4">
-            <%= f.button :submit, "Se connecter", class: "btn-nursy-primary" %>
+            <%= f.button :submit, "Se connecter", class: "btn btn-nursy-primary" %>
           </div>
         <% end %>
-
-        <hr class="my-4">
-
-        <div class="text-center">
-          <%= render "devise/shared/links" %>
-        </div>
       </div>
     </div>
   </div>
