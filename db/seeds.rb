@@ -131,6 +131,24 @@ nurses_data.each do |attrs|
   end
 end
 
+puts "Création d'un rendez-vous terminé avec Claire Fontaine (pour test des avis)..."
+claire = Nurse.find_by(first_name: "Claire", last_name: "Fontaine")
+demo_user = users.first
+
+past_availability = Availability.create!(
+  nurse: claire,
+  start_time: 2.days.ago.change(hour: 10),
+  end_time:   2.days.ago.change(hour: 11),
+  is_booked: true
+)
+
+Appointment.create!(
+  nurse: claire,
+  user: demo_user,
+  availability: past_availability,
+  status: "Confirmé"
+)
+
 puts "Création des infirmiers à Paris..."
 paris_nurses = [
   { first_name: "Camille", last_name: "Moreau",  rpps_number: generate_rpps_number.call },
